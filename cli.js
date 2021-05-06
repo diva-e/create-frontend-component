@@ -11,6 +11,9 @@ const configDefaults = {
   componentPath: 'src/components'
 }
 
+const CONFIG_DIRECTORY = '.create-frontend-component'
+const CONFIG_FILE_NAME = 'config.json'
+
 
 /**
  * @param {string} filePath 
@@ -28,6 +31,23 @@ function loadConfig() {
   }
 }
 
+/**
+ * Creates config directory and adds config file
+ */
+function initProjectInWorkingDirectory() {
+  // Create directory
+  const configPath = path.join(process.cwd(), CONFIG_DIRECTORY)
+  if (!fs.existsSync(configPath)){
+    fs.mkdirSync(configPath)
+  }
+  // Create Config File
+  const configJSON = JSON.stringify(configDefaults)
+  const configFilePath = path.join(CONFIG_DIRECTORY, CONFIG_FILE_NAME)
+  if (!fs.existsSync(configFilePath)){
+    fs.writeFileSync(configFilePath, configJSON, {encoding: 'utf-8' })
+  }
+  // TODO: Prompt preset and copy directory to ./templates
+}
 
 program
   .version('1.0.0')
@@ -35,6 +55,11 @@ program
   .option( '-t, --type <type>', 'Component type, default: atoms')
   .option( '-f, --flavour <flavour>', 'Component flavour')
   .action( function(componentName, env) {
+    if (componentName.toLowerCase() === 'init') {
+      initProjectInWorkingDirectory()
+      return
+    }
+
     const { types, templatePath, componentPath } = loadConfig()
     const allowedComponentTypes = types || []
 

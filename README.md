@@ -4,7 +4,7 @@
 [Contributing](/CONTRIBUTING.md) | [Powered by diva-e](https://www.diva-e.com)
 | --- | --- |
 
-[![GitHub stars](https://img.shields.io/github/stars/diva-e/servemocks.svg?style=social&label=Star)](https://github.com/diva-e/servemocks)
+[![GitHub stars](https://img.shields.io/github/stars/diva-e/create-frontend-component.svg?style=social&label=Star)](https://github.com/diva-e/create-frontend-component)
 
 ## Getting Started
 
