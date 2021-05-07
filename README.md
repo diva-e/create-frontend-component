@@ -1,6 +1,8 @@
 
 # create-frontend-component
 
+Framework-agnostic utility to scaffold frontend components by using custom templates.
+
 [Contributing](/CONTRIBUTING.md) | [Powered by diva-e](https://www.diva-e.com)
 | --- | --- |
 
