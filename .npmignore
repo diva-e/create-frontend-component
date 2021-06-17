@@ -3,3 +3,4 @@ create-frontend-component.code-workspace
 .husky
 .commitlintrc.json
 .eslintrc.json
+playground
