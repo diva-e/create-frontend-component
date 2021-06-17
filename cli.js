@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
 const program = require('commander')
-const { generateComponentFiles } = require('./src/gulpfile.js')
+const { generateComponentFiles } = require('./src/gulpfile')
 const fs = require('fs')
 const path = require('path')
 const promptly = require('promptly')
-const { readdirSync, readFileSync } = require('fs')
+const { readFileSync } = require('fs')
 const { copySync } = require('fs-extra')
+const { getDirectories } = require('./src/utilities')
 
 const CONFIG_DIRECTORY = '.create-frontend-component'
 const CONFIG_FILE_NAME = 'config.json'
+const PRESET_DIR = 'presets'
 
 const configDefaults = {
   types: ['atoms', 'molecules', 'organisms'],
@@ -66,16 +68,6 @@ function initProjectInWorkingDirectory(presetPath) {
   }
 }
 
-/**
- * @param {string} source 
- * @return {Array}
- */
-function getDirectories(source) {
-  return         readdirSync(source, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name)
-}
-
 program
   .version('1.0.0')
   .arguments('<component-name>')
@@ -83,7 +75,7 @@ program
   .option( '-f, --flavour <flavour>', 'Component flavour')
   .action( function(componentName, env) {
     if (componentName.toLowerCase() === 'init') {
-      const presetPath = path.join(__dirname, 'presets')
+      const presetPath = path.join(__dirname, PRESET_DIR)
       const availablePresets = getDirectories(presetPath)
       promptly.choose('Choose a preset (' + availablePresets.join(', ') + '): ', availablePresets).then(
         (presetName) => {
