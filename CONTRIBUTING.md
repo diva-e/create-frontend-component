@@ -19,10 +19,17 @@ You may test new features in the `playground` section of this repository.
 
 ### Test CLI without creating a npm package
 
-To install the local version of servemocks just navigate to the repository root and execute the following command:
+To install the local version of create-frontend-component just navigate to the repository root and execute the following command:
 
 ```bash
 npm install -g
+```
+
+Test your implementation in the playground section:
+
+```bash
+cd playground
+create-frontend-component some-nice-component --flavour minimal
 ```
 
 ## Publish a new Package Version (Maintainers)
