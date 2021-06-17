@@ -1,5 +1,5 @@
 {
     "types": ["atoms", "molecules", "organisms"],
-    "templatePath": "templates",
+    "templatePath": ".create-frontend-component/templates",
     "componentPath": "src/components"
 }

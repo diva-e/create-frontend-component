@@ -8,15 +8,14 @@ const promptly = require('promptly')
 const { readdirSync, readFileSync } = require('fs')
 const { copySync } = require('fs-extra')
 
+const CONFIG_DIRECTORY = '.create-frontend-component'
+const CONFIG_FILE_NAME = 'config.json'
 
 const configDefaults = {
   types: ['atoms', 'molecules', 'organisms'],
-  templatePath: 'templates',
+  templatePath: CONFIG_DIRECTORY + '/templates',
   componentPath: 'src/components'
 }
-
-const CONFIG_DIRECTORY = '.create-frontend-component'
-const CONFIG_FILE_NAME = 'config.json'
 
 
 /**

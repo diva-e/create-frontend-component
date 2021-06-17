@@ -48,7 +48,6 @@ function generateComponentFiles (templatePath, componentPath, name, componentTyp
   const relativeDestinationPath = componentType ? path.join(componentType, upperCamelCaseName) : upperCamelCaseName
   const resolvedTemplatePath = path.join(
     process.cwd(),
-    '.create-frontend-component',
     templatePath,
     flavour || 'default',
     'ComponentTemplate/**/*.**'
