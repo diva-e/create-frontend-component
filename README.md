@@ -78,7 +78,7 @@ Example:
   "version": "1.0.0",
   "scripts": {
     "create-component": "create-frontend-component prompt"
-  },
+  }
 }
 ```
 
