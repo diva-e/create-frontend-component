@@ -77,7 +77,7 @@ Example:
   "name": "foo-bar-project",
   "version": "1.0.0",
   "scripts": {
-    "create-component": "create-frontend-component prompt",
+    "create-component": "create-frontend-component prompt"
   },
 }
 ```
