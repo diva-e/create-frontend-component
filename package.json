@@ -22,7 +22,7 @@
     "developer tools"
   ],
   "lint-staged": {
-    "*.js": "eslint --fix --max-warnings 0"
+    "*.js": "eslint --quiet --fix --max-warnings 1"
   },
   "standard-version": {
     "types": [
