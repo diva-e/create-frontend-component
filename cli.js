@@ -98,6 +98,16 @@ program
       ).then(
         (componentType) => {
           context.componentType = componentType
+
+          if (availableFlavours.length === 0) {
+            console.warn('Could not detect any component flavour, falling back to "default"')
+            return Promise.resolve('default')
+          }
+
+          if (availableFlavours.length === 1) {
+            return Promise.resolve(availableFlavours[0])
+          }
+
           return promptly.choose('Choose a flavour (' + availableFlavours.join(', ') + '): ', availableFlavours)
         }
       ).then(
