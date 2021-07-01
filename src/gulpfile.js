@@ -28,6 +28,7 @@ function generateComponentFiles (fullTemplatePath, componentPath, name, componen
 
   const upperCamelCaseName = toUpperCamelCase(name)
   const relativeDestinationPath = componentType ? path.join(componentType, upperCamelCaseName) : upperCamelCaseName
+  const destinationPath = path.join(componentPath, relativeDestinationPath)
   const resolvedTemplatePath = path.join(
     fullTemplatePath,
     effectiveFlavour,
@@ -45,7 +46,8 @@ function generateComponentFiles (fullTemplatePath, componentPath, name, componen
     .pipe(rename((path) => {
       path.basename = path.basename.replace('ComponentTemplate', upperCamelCaseName)
     }))
-    .pipe(gulp.dest(path.join(componentPath, relativeDestinationPath)))
+    .pipe(gulp.dest(destinationPath))
+    .on('end', function(){ console.log(`Component '${destinationPath}' was created.`) })
 }
 
 exports.generateComponentFiles = generateComponentFiles
