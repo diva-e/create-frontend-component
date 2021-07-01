@@ -36,9 +36,22 @@ function toUpperCamelCase(val) {
   ).join('')
 }
 
+/**
+ * @param {string} name
+ * @return {string}
+ */
+function validateKebabCaseName (name) {
+  if (name !== name.toLowerCase() || name.indexOf('_') !== -1) {
+    throw new Error(`component name '${name}' is not allowed, please use kebab case names eg. foo-bar-toolbar`)
+  }
+
+  return name
+}
+
 module.exports = {
   getDirectories,
   toTitleCase,
   toFirstLetterLowerCase,
-  toUpperCamelCase
+  toUpperCamelCase,
+  validateKebabCaseName
 }

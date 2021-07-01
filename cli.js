@@ -7,11 +7,12 @@ const path = require('path')
 const promptly = require('promptly')
 const { readFileSync } = require('fs')
 const { copySync } = require('fs-extra')
-const { getDirectories } = require('./src/utilities')
+const { getDirectories, validateKebabCaseName } = require('./src/utilities')
 
 const CONFIG_DIRECTORY = '.create-frontend-component'
 const CONFIG_FILE_NAME = 'config.json'
 const PRESET_DIR = 'presets'
+const PRESET_PATH = path.join(__dirname, PRESET_DIR)
 
 const configDefaults = {
   types: ['atoms', 'molecules', 'organisms'],
@@ -75,18 +76,48 @@ program
   .option( '-f, --flavour <flavour>', 'Component flavour')
   .action( function(componentName, env) {
     if (componentName.toLowerCase() === 'init') {
-      const presetPath = path.join(__dirname, PRESET_DIR)
-      const availablePresets = getDirectories(presetPath)
+      const availablePresets = getDirectories(PRESET_PATH)
       promptly.choose('Choose a preset (' + availablePresets.join(', ') + '): ', availablePresets).then(
-        (presetName) => {
-          initProjectInWorkingDirectory(path.join(presetPath, presetName))
-        }
+        (presetName) => initProjectInWorkingDirectory(path.join(PRESET_PATH, presetName))
       )
       return
     }
 
     const { types, templatePath, componentPath } = loadConfig()
     const allowedComponentTypes = types || []
+    const fullTemplatePath = path.join(process.cwd(), templatePath)
+    const availableFlavours = getDirectories(fullTemplatePath)
+
+    if (componentName.toLowerCase() === 'prompt') {
+      const context = {}
+      promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName }).then(
+        (componentName) => {
+          context.componentName = componentName
+          return promptly.choose('Choose a type (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
+        }
+      ).then(
+        (componentType) => {
+          context.componentType = componentType
+
+          if (availableFlavours.length === 0) {
+            console.warn('Could not detect any component flavour, falling back to "default"')
+            return Promise.resolve('default')
+          }
+
+          if (availableFlavours.length === 1) {
+            return Promise.resolve(availableFlavours[0])
+          }
+
+          return promptly.choose('Choose a flavour (' + availableFlavours.join(', ') + '): ', availableFlavours)
+        }
+      ).then(
+        (flavour) => {
+          generateComponentFiles(fullTemplatePath, componentPath, context.componentName, context.componentType, flavour, availableFlavours)
+          return
+        }
+      )
+      return
+    }
 
     if (env.type && allowedComponentTypes.length == 0) {
       throw new Error('component types are not configured in this project but found parameter "type"')
@@ -106,6 +137,6 @@ program
       throw new Error(`component type '${componentType}' is not allowed, choose one of: ${allowedComponentTypes}`)
     }
 
-    generateComponentFiles(templatePath, componentPath, componentName, componentType, env.flavour)
+    generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, env.flavour, availableFlavours)
   })
   .parse(process.argv)
