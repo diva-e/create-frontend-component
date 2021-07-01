@@ -53,7 +53,7 @@ We also have directories called `ComponentTemplate` they will be renamed to the 
 This directory in turn may contain any desired files you need for component generation. This tool will copy those files, 
 rename them and replace all placeholders. In this example a `.mdx` file and a `.vue` file would be generated.
 
-### Usage
+## Usage
 
 ```bash
 create-frontend-component foo-bar-toolbar --type molecules --flavour minimal
@@ -63,3 +63,23 @@ create-frontend-component foo-bar-toolbar --type molecules --flavour minimal
 * Types may be configured in the config file
 
 Component files will be generated under the configured component path.
+
+### NPM-Script Usage
+
+For convenience reasons you might want to add this tool to _package.json_ scripts.
+However, the way to add cli parameters to npm scripts might be unintuitive for developers.
+That is the reason we added the `prompt` subcommand.
+
+Example:
+
+```json
+{
+  "name": "foo-bar-project",
+  "version": "1.0.0",
+  "scripts": {
+    "create-component": "create-frontend-component prompt",
+  },
+}
+```
+
+When executing `npm run create-component` the user now will be prompted for all necessary parameters.

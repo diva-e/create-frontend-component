@@ -4,25 +4,24 @@ const gulp = require('gulp')
 const path = require('path')
 const rename = require('gulp-rename')
 const template = require('gulp-template')
-const { getDirectories, toTitleCase, toFirstLetterLowerCase, toUpperCamelCase } = require('./utilities')
+const { toTitleCase, toFirstLetterLowerCase, toUpperCamelCase } = require('./utilities')
 
 /**
- * @param {string} templatePath 
+ * @param {string} fullTemplatePath 
  * @param {string} componentPath 
  * @param {string} name 
  * @param {string} componentType 
- * @param {string} flavour 
+ * @param {string} flavour
+ * @param {Array<string>} availableFlavours
  * @return {any}
  */
-function generateComponentFiles (templatePath, componentPath, name, componentType, flavour) {
+function generateComponentFiles (fullTemplatePath, componentPath, name, componentType, flavour, availableFlavours) {
   if (name !== name.toLowerCase()) {
     throw new Error(`component name '${name}' is not allowed, please use kebab case names eg. foo-bar-toolbar`)
   }
 
   const effectiveFlavour = (flavour || 'default').trim()
-  const fullTemplatePath = path.join(process.cwd(), templatePath)
-  
-  const availableFlavours = getDirectories(fullTemplatePath)
+
   if (!availableFlavours.includes(effectiveFlavour)) {
     throw new Error(`flavour '${effectiveFlavour}' does not exist, choose one of: ${availableFlavours}`)
   }
