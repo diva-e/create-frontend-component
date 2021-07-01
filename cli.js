@@ -7,7 +7,7 @@ const path = require('path')
 const promptly = require('promptly')
 const { readFileSync } = require('fs')
 const { copySync } = require('fs-extra')
-const { getDirectories } = require('./src/utilities')
+const { getDirectories, validateKebabCaseName } = require('./src/utilities')
 
 const CONFIG_DIRECTORY = '.create-frontend-component'
 const CONFIG_FILE_NAME = 'config.json'
@@ -90,7 +90,7 @@ program
 
     if (componentName.toLowerCase() === 'prompt') {
       const context = {}
-      promptly.prompt('Component Name (kebab-case): ').then(
+      promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName }).then(
         (componentName) => {
           context.componentName = componentName
           return promptly.choose('Choose a type (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)

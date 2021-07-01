@@ -4,7 +4,7 @@ const gulp = require('gulp')
 const path = require('path')
 const rename = require('gulp-rename')
 const template = require('gulp-template')
-const { toTitleCase, toFirstLetterLowerCase, toUpperCamelCase } = require('./utilities')
+const { toTitleCase, toFirstLetterLowerCase, toUpperCamelCase, validateKebabCaseName } = require('./utilities')
 
 /**
  * @param {string} fullTemplatePath 
@@ -16,9 +16,7 @@ const { toTitleCase, toFirstLetterLowerCase, toUpperCamelCase } = require('./uti
  * @return {any}
  */
 function generateComponentFiles (fullTemplatePath, componentPath, name, componentType, flavour, availableFlavours) {
-  if (name !== name.toLowerCase()) {
-    throw new Error(`component name '${name}' is not allowed, please use kebab case names eg. foo-bar-toolbar`)
-  }
+  validateKebabCaseName(name) // throws error if failed
 
   const effectiveFlavour = (flavour || 'default').trim()
 
