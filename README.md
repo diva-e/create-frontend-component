@@ -70,7 +70,13 @@ For convenience reasons you might want to add this tool to _package.json_ script
 However, the way to add cli parameters to npm scripts might be unintuitive for developers.
 That is the reason we added the `prompt` subcommand.
 
-Example:
+First install the package as dev dependency:
+
+```bash
+npm install --save-dev create-frontend-component
+```
+
+Then add a script like this:
 
 ```json
 {
