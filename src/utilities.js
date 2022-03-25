@@ -1,4 +1,4 @@
-const { readdirSync } = require('fs')
+const { readdirSync, existsSync } = require('fs')
 
 /**
  * @param {string} source 
@@ -8,6 +8,16 @@ function getDirectories(source) {
   return readdirSync(source, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name)
+}
+
+/**
+ * @param {string} path
+ * @return {Array}
+ */
+function getFiles(path) {
+  return readdirSync(path, { withFileTypes: true })
+    .filter(obj => obj.isFile())
+    .map(file => file.name)
 }
 
 /**
@@ -48,10 +58,21 @@ function validateKebabCaseName (name) {
   return name
 }
 
+/**
+ * @param {string} destinationPath
+ */
+function validateDirectoryExists(destinationPath) {
+  if (!existsSync(destinationPath)) {
+    throw new Error(`'${destinationPath}' does not exist, please create the component directly`)
+  }
+}
+
 module.exports = {
   getDirectories,
+  getFiles,
   toTitleCase,
   toFirstLetterLowerCase,
   toUpperCamelCase,
-  validateKebabCaseName
+  validateKebabCaseName,
+  validateDirectoryExists,
 }
