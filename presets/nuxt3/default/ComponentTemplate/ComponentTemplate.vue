@@ -1,11 +1,15 @@
 <template>
-  <div class="<%= name %> minimal">
+  <div class="<%= name %>">
     Text
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { defineProps } from 'vue';
 
+defineProps<{
+  text?: string
+}>()
 </script>
 
 <style lang="scss" scoped>

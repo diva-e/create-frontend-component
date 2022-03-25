@@ -1,15 +1,18 @@
 <template>
-  <div class="<%= name %> minimal">
-    Minimal Text
+  <div class="<%= name %>">
+    Text
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   props: {
-
+    text: {
+      type: String,
+      default: undefined
+    }
   },
   setup () {
     return {}
