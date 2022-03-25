@@ -4,10 +4,10 @@ const program = require('commander')
 const { generateComponentFiles } = require('./src/gulpfile')
 const fs = require('fs')
 const path = require('path')
-const promptly = require('promptly')
 const { readFileSync } = require('fs')
 const { copySync } = require('fs-extra')
 const { getDirectories, validateKebabCaseName } = require('./src/utilities')
+const prompts = require('prompts')
 
 const CONFIG_DIRECTORY = '.create-frontend-component'
 const CONFIG_FILE_NAME = 'config.json'
@@ -22,7 +22,7 @@ const configDefaults = {
 
 
 /**
- * @param {string} filePath 
+ * @param {string} filePath
  * @return {object}
  */
 function loadConfig() {
@@ -74,13 +74,18 @@ program
   .arguments('<component-name>')
   .option( '-t, --type <type>', 'Component type, default: atoms')
   .option( '-f, --flavour <flavour>', 'Component flavour')
-  .action( function(componentName, env) {
+  .action( async function(componentName, env) {
     if (componentName.toLowerCase() === 'init') {
       const availablePresets = getDirectories(PRESET_PATH)
-      promptly.choose('Choose a preset (' + availablePresets.join(', ') + '): ', availablePresets).then(
-        (presetName) => initProjectInWorkingDirectory(path.join(PRESET_PATH, presetName))
-      )
-      return
+
+      const presetPrompt = await prompts({
+        type: 'select',
+        name: 'preset',
+        message: 'Choose a preset',
+        choices: availablePresets.map(preset => ({ title: preset, value: preset })),
+      })
+
+      initProjectInWorkingDirectory(path.join(PRESET_PATH, presetPrompt.preset))
     }
 
     const { types, templatePath, componentPath } = loadConfig()
@@ -90,33 +95,42 @@ program
 
     if (componentName.toLowerCase() === 'prompt') {
       const context = {}
-      promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName }).then(
-        (componentName) => {
-          context.componentName = componentName
-          return promptly.choose('Choose a type (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
-        }
-      ).then(
-        (componentType) => {
-          context.componentType = componentType
 
-          if (availableFlavours.length === 0) {
-            console.warn('Could not detect any component flavour, falling back to "default"')
-            return Promise.resolve('default')
-          }
+      const componentNamePrompt = await prompts({
+        type: 'text',
+        name: 'componentName',
+        message: 'Component Name (kebab-case)',
+        validate: validateKebabCaseName
+      })
 
-          if (availableFlavours.length === 1) {
-            return Promise.resolve(availableFlavours[0])
-          }
+      context.componentName = componentNamePrompt.componentName
 
-          return promptly.choose('Choose a flavour (' + availableFlavours.join(', ') + '): ', availableFlavours)
-        }
-      ).then(
-        (flavour) => {
-          generateComponentFiles(fullTemplatePath, componentPath, context.componentName, context.componentType, flavour, availableFlavours)
-          return
-        }
-      )
-      return
+      const componentTypePrompt = await prompts({
+        type: 'select',
+        name: 'componentType',
+        message: 'Choose a type',
+        choices: allowedComponentTypes.map(type => ({ title: type, value: type })),
+      })
+
+      context.componentType = componentTypePrompt.componentType
+
+      if (availableFlavours.length === 0) {
+        console.warn('Could not detect any component flavour, falling back to "default"')
+        return generateComponentFiles(fullTemplatePath, componentPath, context.componentName, context.componentType, 'default', availableFlavours)
+      }
+
+      if (availableFlavours.length === 1) {
+        return generateComponentFiles(fullTemplatePath, componentPath, context.componentName, context.componentType, availableFlavours[0], availableFlavours)
+      }
+
+      const flavourPrompt = await prompts({
+        type: 'select',
+        name: 'flavour',
+        message: 'Choose a flavour',
+        choices: availableFlavours.map(flavour => ({ title: flavour, value: flavour })),
+      })
+
+      return generateComponentFiles(fullTemplatePath, componentPath, context.componentName, context.componentType, flavourPrompt.flavour, availableFlavours)
     }
 
     if (env.type && allowedComponentTypes.length == 0) {
