@@ -1,6 +1,6 @@
 <template>
   <div class="<%= name %>">
-    Text
+    Text: {{ text }}
   </div>
 </template>
 
@@ -21,6 +21,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '~~/assets/scss/components';
+.<%= name %> {
 
+}
 </style>

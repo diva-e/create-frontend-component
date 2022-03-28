@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import <%= upperCamelCaseName %> from '~/components/atoms/<%= upperCamelCaseName %>/<%= upperCamelCaseName %>.vue'
+import <%= upperCamelCaseName %> from './<%= upperCamelCaseName %>.vue'
 
 describe('<%= upperCamelCaseName %>', () => {
   it('is a Vue instance', () => {

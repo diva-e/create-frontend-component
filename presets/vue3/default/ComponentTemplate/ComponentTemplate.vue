@@ -1,6 +1,6 @@
 <template>
   <div class="<%= name %>">
-    Text
+    Text: {{ text }}
   </div>
 </template>
 
@@ -13,7 +13,8 @@ defineProps<{
 </script>
 
 <style lang="scss" scoped>
-@import '~~/assets/scss/components';
+.<%= name %> {
 
+}
 </style>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="<%= name %>">
-    <p>{{ text }}</p>
+    Text: {{ text }}
   </div>
 </template>
 
@@ -18,10 +18,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '~~/assets/scss/components';
-
 .<%= name %> {
-  background-color: #fdd;
-}
 
+}
 </style>
