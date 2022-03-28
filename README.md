@@ -3,8 +3,8 @@
 
 Framework-agnostic utility to scaffold frontend components by using custom templates.
 
-[Contributing](/CONTRIBUTING.md) | [Changelog](/CHANGELOG.md) | [Powered by diva-e](https://www.diva-e.com)
-| --- | --- | --- |
+| [Contributing](/CONTRIBUTING.md) | [Changelog](/CHANGELOG.md) | [Powered by diva-e](https://www.diva-e.com)  |
+|----------------------------------| --- |----------------------------------------------|
 
 [![GitHub stars](https://img.shields.io/github/stars/diva-e/create-frontend-component.svg?style=social&label=Star)](https://github.com/diva-e/create-frontend-component)
 

@@ -1,0 +1,30 @@
+import { Meta, Canvas, Story, ArgsTable } from '@storybook/addon-docs/blocks';
+import <%= upperCamelCaseName %> from './<%= upperCamelCaseName %>.vue';
+
+<Meta
+  title="<%= componentType %>/<%= upperCamelCaseName %>"
+  component={<%= upperCamelCaseName %>}
+/>
+
+export const Template = (args, { argTypes }) => ({
+  props: Object.keys(argTypes),
+  components: { <%= upperCamelCaseName %> },
+  template: `
+    <<%= name %> :text="text" />
+  `
+});
+
+# <%= upperCamelCaseName %>
+
+<Canvas>
+  <Story
+    name="<%= upperCamelCaseName %>"
+    args={{
+      text: 'Sample Text for Component <%= upperCamelCaseName %>'
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+<ArgsTable of={<%= upperCamelCaseName %>} />
