@@ -89,3 +89,7 @@ Then add a script like this:
 ```
 
 When executing `npm run create-component` the user now will be prompted for all necessary parameters.
+
+## License
+
+[MIT](LICENSE)
