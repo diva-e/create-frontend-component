@@ -87,22 +87,22 @@ function generateFilesIfNotExistAlready (fullTemplatePath, componentPath, name, 
   }
 
   const existingFiles = getFiles(destinationPath)
-  const existingFileExtensions = existingFiles.map(fileName => fileName.split(upperCamelCaseName + '.')[1])
-
   const templateFiles = getFiles(path.join(fullTemplatePath, effectiveFlavour, 'ComponentTemplate'))
-  const templateFilesExtensions = templateFiles.map(fileName => fileName.split('ComponentTemplate.')[1])
 
-  templateFilesExtensions.forEach((extension) => {
-    if (!existingFileExtensions.includes(extension)) {
-      const resolvedTemplatePath = path.join(
-        fullTemplatePath,
-        effectiveFlavour,
-        'ComponentTemplate/**/*.' + extension
-      )
+  const filesToAdd = templateFiles.filter(fileName => {
+    const tmpName = fileName.replace('ComponentTemplate', upperCamelCaseName)
+    return !existingFiles.includes(tmpName)
+  })
 
-      const endMessage = `New file '${destinationPath}.${extension} created`
-      generateFiles(resolvedTemplatePath, name, componentType, upperCamelCaseName, relativeDestinationPath, destinationPath, endMessage)
-    }
+  filesToAdd.forEach((newFile) => {
+    const resolvedTemplatePath = path.join(
+      fullTemplatePath,
+      effectiveFlavour,
+      'ComponentTemplate/**/' + newFile
+    )
+
+    const endMessage = `New file '${newFile.replace('ComponentTemplate', upperCamelCaseName)}' created`
+    generateFiles(resolvedTemplatePath, name, componentType, upperCamelCaseName, relativeDestinationPath, destinationPath, endMessage)
   })
 }
 

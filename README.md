@@ -90,6 +90,12 @@ Then add a script like this:
 
 When executing `npm run create-component` the user now will be prompted for all necessary parameters.
 
+### Component upgrade
+
+We have also introduced the command `create-frontend-component upgrade` that enables you the possibility
+to change the flavour of a component, adding the files of the new flavour that are missing in the component.
+Using this upgrade function, none of the existing files of a component will be removed.
+
 ## License
 
 [MIT](LICENSE)

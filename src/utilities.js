@@ -63,7 +63,7 @@ function validateKebabCaseName (name) {
  */
 function validateDirectoryExists(destinationPath) {
   if (!existsSync(destinationPath)) {
-    throw new Error(`'${destinationPath}' does not exist, please create the component directly`)
+    throw new Error(`'${destinationPath}' does not exist, please try again`)
   }
 }
 
