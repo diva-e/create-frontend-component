@@ -5,6 +5,44 @@ const path = require('path')
 const rename = require('gulp-rename')
 const template = require('gulp-template')
 const { toTitleCase, toFirstLetterLowerCase, toUpperCamelCase, validateKebabCaseName, validateDirectoryExists, getFiles } = require('./utilities')
+const fs = require('fs')
+const { copySync } = require('fs-extra')
+
+/**
+ * Creates config directory and adds config file
+ *
+ * @param {string} presetPath
+ * @param {string} configDirectory
+ * @param {string} configFileName
+ * @param {object} configDefaults
+ */
+function initProjectInWorkingDirectory(presetPath, configDirectory, configFileName, configDefaults) {
+  // Create directory
+  const configPath = path.join(process.cwd(), configDirectory)
+  if (!fs.existsSync(configPath)){
+    console.log('\nCreate directory ' + configDirectory)
+    fs.mkdirSync(configPath)
+  }
+  // Create Config File
+  const configJSON = JSON.stringify(configDefaults)
+  const configFilePath = path.join(configDirectory, configFileName)
+  if (!fs.existsSync(configFilePath)){
+    console.log('Create config file ' + configFilePath)
+    fs.writeFileSync(configFilePath, configJSON, { encoding: 'utf-8' })
+  }
+
+  const defaultTemplatePath = path.join(configDirectory, 'templates')
+  if (!fs.existsSync(defaultTemplatePath)){
+    console.log('Create templates directory ' + defaultTemplatePath)
+    fs.mkdirSync(defaultTemplatePath)
+  }
+  try {
+    copySync(presetPath, defaultTemplatePath, { overwrite: true })
+    console.log('\nTemplates were created and transfered successfully')
+  } catch (error) {
+    console.error('Error: unable to copy presets', error)
+  }
+}
 
 /**
  * @param {string} resolvedTemplatePath
@@ -35,10 +73,10 @@ function generateFiles(resolvedTemplatePath, name, componentType, upperCamelCase
 }
 
 /**
- * @param {string} fullTemplatePath 
- * @param {string} componentPath 
- * @param {string} name 
- * @param {string} componentType 
+ * @param {string} fullTemplatePath
+ * @param {string} componentPath
+ * @param {string} name
+ * @param {string} componentType
  * @param {string} flavour
  * @param {Array<string>} availableFlavours
  * @return {any}
@@ -106,5 +144,8 @@ function generateFilesIfNotExistAlready (fullTemplatePath, componentPath, name, 
   })
 }
 
-exports.generateComponentFiles = generateComponentFiles
-exports.generateFilesIfNotExistAlready = generateFilesIfNotExistAlready
+module.exports = {
+  generateComponentFiles,
+  generateFilesIfNotExistAlready,
+  initProjectInWorkingDirectory
+}

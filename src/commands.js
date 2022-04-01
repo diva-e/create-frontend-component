@@ -1,6 +1,7 @@
 const promptly = require('promptly')
-const { validateKebabCaseName } = require('./utilities')
-const { generateComponentFiles, generateFilesIfNotExistAlready } = require('./gulpfile')
+const { validateKebabCaseName, getDirectories } = require('./utilities')
+const { generateComponentFiles, generateFilesIfNotExistAlready, initProjectInWorkingDirectory } = require('./gulpfile')
+const path = require('path')
 
 /**
  * @param {Array<string>} availableFlavours
@@ -26,7 +27,7 @@ async function promptFlavour(availableFlavours, label = 'Choose a flavour') {
  * @return {Promise<void>}
  */
 async function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath) {
-  const componentName = await promptly.prompt('Component Name (kebab-case): ', {validator: validateKebabCaseName})
+  const componentName = await promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName })
   const componentType = await promptly.choose('Choose a type (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
   const flavour = await promptFlavour(availableFlavours)
   generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours)
@@ -45,7 +46,7 @@ async function processUpgradeCommand(availableFlavours, allowedComponentTypes, f
     return
   }
 
-  const componentName = await promptly.prompt('Component Name (kebab-case): ', {validator: validateKebabCaseName})
+  const componentName = await promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName })
   const componentType = await promptly.choose('Which type is your component? (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
   const flavour = await promptFlavour(availableFlavours, 'Choose a flavour to upgrade')
   generateFilesIfNotExistAlready(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours)
@@ -81,8 +82,22 @@ function processCreateComponentCommand(env, allowedComponentTypes, fullTemplateP
   generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, env.flavour, availableFlavours)
 }
 
+/**
+ * @param {string} presetPath
+ * @param {string} configDirectory
+ * @param {string} configFileName
+ * @param {string} configDefaults
+ * @return {Promise<void>}
+ */
+async function processInitCommand(presetPath, configDirectory, configFileName, configDefaults) {
+  const availablePresets = getDirectories(presetPath)
+  const presetName = await promptly.choose('Choose a preset (' + availablePresets.join(', ') + '): ', availablePresets)
+  return initProjectInWorkingDirectory(path.join(presetPath, presetName), configDirectory, configFileName, configDefaults)
+}
+
 module.exports = {
   processUpgradeCommand,
   processPromptCommand,
-  processCreateComponentCommand
+  processCreateComponentCommand,
+  processInitCommand
 }
