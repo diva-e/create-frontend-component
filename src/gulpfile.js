@@ -8,6 +8,8 @@ const { toTitleCase, toFirstLetterLowerCase, toUpperCamelCase, validateKebabCase
 const fs = require('fs')
 const { copySync } = require('fs-extra')
 
+const DEFAULT_FLAVOUR_NAME = 'default'
+
 /**
  * Creates config directory and adds config file
  *
@@ -87,7 +89,7 @@ function generateComponentFiles (fullTemplatePath, componentPath, name, componen
     throw new Error(validationResult)
   }
 
-  const effectiveFlavour = (flavour || 'default').trim()
+  const effectiveFlavour = (flavour || DEFAULT_FLAVOUR_NAME).trim()
 
   if (!availableFlavours.includes(effectiveFlavour)) {
     throw new Error(`flavour '${effectiveFlavour}' does not exist, choose one of: ${availableFlavours}`)
