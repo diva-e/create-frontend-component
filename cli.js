@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const program = require('commander')
-const { generateComponentFiles } = require('./src/gulpfile')
+const { generateComponentFiles, generateFilesIfNotExistAlready} = require('./src/gulpfile')
 const fs = require('fs')
 const path = require('path')
 const promptly = require('promptly')
@@ -118,6 +118,36 @@ program
       )
       return
     }
+
+    if (componentName.toLowerCase() === 'upgrade') {
+      const context = {}
+      if (availableFlavours.length <= 1) {
+        console.warn('Could not detect more than 1 flavour, upgrade is not possible')
+        return
+      }
+
+      promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName })
+        .then(
+          (componentName) => {
+            context.componentName = componentName
+            return promptly.choose('Which type is your component? (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
+          }
+        )
+        .then(
+          (componentType) => {
+            context.componentType = componentType
+
+            return promptly.choose('Choose a flavour to upgrade (' + availableFlavours.join(', ') + '): ', availableFlavours)
+          }
+        ).then(
+          (flavour) => {
+            generateFilesIfNotExistAlready(fullTemplatePath, componentPath, context.componentName, context.componentType, flavour, availableFlavours)
+            return
+          }
+        )
+      return
+    }
+
 
     if (env.type && allowedComponentTypes.length == 0) {
       throw new Error('component types are not configured in this project but found parameter "type"')
