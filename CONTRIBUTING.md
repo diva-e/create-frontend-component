@@ -2,11 +2,11 @@
 
 Feel free to contribute to this project by creating a pull request on GitHub.
 
-Commits should be well structured, which means that a single commit must not contain multiple concerns.
+Commits should be well-structured, which means that a single commit must not contain multiple concerns.
 
 Furthermore, commit messages should have a conventional/semantic commit type in order for the automatic package version management to work.
 
-Take a look at the the commit guidelines for more information.
+Take a look at the commit guidelines for more information.
 
 ## Development Workflow
 
@@ -37,9 +37,11 @@ create-frontend-component some-nice-component --flavour minimal
 NOTE: Packages should only be published based on the `main` branch
 and only maintainers (members of `npmjs.com/org/divae`) are allowed to publish new package versions.
 
+1. Run `npm run release -- --dry-run` to check which version will be created
+2. Update version in cli.js (see step 1) and commit the change
 1. Run `npm run release` to create new version including git tag, changelog entry and package.json version.
 2. Run `git push origin <tagName>` to push the new git tag
-3. Run `npm publish` to finsih the publication process
+3. Run `npm publish` to finish the publication process
 
 ## Commit Messages
 
@@ -56,11 +58,11 @@ Conventional Commits enable automatic changelogs and simplified publication of p
 <footer>
 ```
 
-Version Level   | Example           | Description
--------------   | -----             | -----
-Patch           | 1.0.0 --> 1.0.1   | Fixes / Patches
-Minor           | 1.1.3 --> 1.2.0   | New features
-Major           | 1.2.6 --> 2.0.0   | Breaking changes (see Type section)
+| Version Level | Example         | Description                         |
+|---------------|-----------------|-------------------------------------|
+| Patch         | 1.0.0 --> 1.0.1 | Fixes / Patches                     |
+| Minor         | 1.1.3 --> 1.2.0 | New features                        |
+| Major         | 1.2.6 --> 2.0.0 | Breaking changes (see Type section) |
 
 Subject must be written in imperative style eg:
 
