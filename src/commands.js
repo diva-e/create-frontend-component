@@ -1,7 +1,7 @@
-const promptly = require('promptly')
 const { validateKebabCaseName, getDirectories } = require('./utilities')
 const { generateComponentFiles, generateFilesIfNotExistAlready, initProjectInWorkingDirectory } = require('./gulpfile')
 const path = require('path')
+const { promptSingleSelect, promptText } = require('./prompt-utilities')
 
 /**
  * @param {Array<string>} availableFlavours
@@ -16,7 +16,7 @@ async function promptFlavour(availableFlavours, label = 'Choose a flavour') {
   if (availableFlavours.length === 1) {
     return Promise.resolve(availableFlavours[0])
   }
-  return promptly.choose(label + ' (' + availableFlavours.join(', ') + '): ', availableFlavours)
+  return promptSingleSelect(label, availableFlavours)
 }
 
 /**
@@ -27,8 +27,8 @@ async function promptFlavour(availableFlavours, label = 'Choose a flavour') {
  * @return {Promise<void>}
  */
 async function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath) {
-  const componentName = await promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName })
-  const componentType = await promptly.choose('Choose a type (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
+  const componentName = await promptText('Component Name (kebab-case)', validateKebabCaseName)
+  const componentType = await promptSingleSelect('Choose a type', allowedComponentTypes)
   const flavour = await promptFlavour(availableFlavours)
   generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours)
 }
@@ -46,8 +46,8 @@ async function processUpgradeCommand(availableFlavours, allowedComponentTypes, f
     return
   }
 
-  const componentName = await promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName })
-  const componentType = await promptly.choose('Which type is your component? (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
+  const componentName = await promptText('Component Name (kebab-case)', validateKebabCaseName)
+  const componentType = await promptSingleSelect('Which type is your component?', allowedComponentTypes)
   const flavour = await promptFlavour(availableFlavours, 'Choose a flavour to upgrade')
   generateFilesIfNotExistAlready(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours)
 }
@@ -91,7 +91,7 @@ function processCreateComponentCommand(env, allowedComponentTypes, fullTemplateP
  */
 async function processInitCommand(presetPath, configDirectory, configFileName, configDefaults) {
   const availablePresets = getDirectories(presetPath)
-  const presetName = await promptly.choose('Choose a preset (' + availablePresets.join(', ') + '): ', availablePresets)
+  const presetName = await promptSingleSelect('Choose a preset', availablePresets)
   return initProjectInWorkingDirectory(path.join(presetPath, presetName), configDirectory, configFileName, configDefaults)
 }
 

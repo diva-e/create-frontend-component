@@ -82,7 +82,10 @@ function generateFiles(resolvedTemplatePath, name, componentType, upperCamelCase
  * @return {any}
  */
 function generateComponentFiles (fullTemplatePath, componentPath, name, componentType, flavour, availableFlavours) {
-  validateKebabCaseName(name) // throws error if failed
+  const validationResult = validateKebabCaseName(name) // returns true or message
+  if (validationResult !== true) {
+    throw new Error(validationResult)
+  }
 
   const effectiveFlavour = (flavour || 'default').trim()
 
