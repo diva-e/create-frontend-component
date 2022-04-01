@@ -9,6 +9,7 @@
     "extends": "eslint:recommended",
     "rules": {
         "prefer-const": "error",
+        "object-curly-spacing": ["warn", "always"],
         "indent": [
             "error",
             2
