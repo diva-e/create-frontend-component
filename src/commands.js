@@ -76,7 +76,8 @@ function processCreateComponentCommand(env, allowedComponentTypes, fullTemplateP
   }
 
   if (componentType && !allowedComponentTypes.includes(componentType)) {
-    throw new Error(`component type '${componentType}' is not allowed, choose one of: ${allowedComponentTypes}`)
+    console.error(`component type '${componentType}' is not allowed, choose one of: ${allowedComponentTypes}`)
+    throw new Error('component type not found')
   }
 
   generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, env.flavour, availableFlavours)

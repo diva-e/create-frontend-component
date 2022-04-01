@@ -86,13 +86,15 @@ function generateFiles(resolvedTemplatePath, name, componentType, upperCamelCase
 function generateComponentFiles (fullTemplatePath, componentPath, name, componentType, flavour, availableFlavours) {
   const validationResult = validateKebabCaseName(name) // returns true or message
   if (validationResult !== true) {
-    throw new Error(validationResult)
+    console.error(validationResult)
+    throw new Error('name is invalid')
   }
 
   const effectiveFlavour = (flavour || DEFAULT_FLAVOUR_NAME).trim()
 
   if (!availableFlavours.includes(effectiveFlavour)) {
-    throw new Error(`flavour '${effectiveFlavour}' does not exist, choose one of: ${availableFlavours}`)
+    console.error(`flavour '${effectiveFlavour}' does not exist, choose one of: ${availableFlavours}`)
+    throw new Error('flavour not found')
   }
 
   const upperCamelCaseName = toUpperCamelCase(name)
