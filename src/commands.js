@@ -3,39 +3,33 @@ const { validateKebabCaseName } = require('./utilities')
 const { generateComponentFiles, generateFilesIfNotExistAlready } = require('./gulpfile')
 
 /**
+ * @param {Array<string>} availableFlavours
+ * @param {string} label
+ * @return {Promise<string>}
+ */
+async function promptFlavour(availableFlavours, label = 'Choose a flavour') {
+  if (availableFlavours.length === 0) {
+    console.warn('Could not detect any component flavour, falling back to "default"')
+    return Promise.resolve('default')
+  }
+  if (availableFlavours.length === 1) {
+    return Promise.resolve(availableFlavours[0])
+  }
+  return promptly.choose(label + ' (' + availableFlavours.join(', ') + '): ', availableFlavours)
+}
+
+/**
  * @param {Array<string>} allowedComponentTypes
  * @param {Array<string>} availableFlavours
  * @param {string} fullTemplatePath
  * @param {string} componentPath
  * @return {Promise<void>}
  */
-function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath) {
-  const context = {}
-  return promptly.prompt('Component Name (kebab-case): ', {validator: validateKebabCaseName}).then(
-    (componentName) => {
-      context.componentName = componentName
-      return promptly.choose('Choose a type (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
-    },
-  ).then(
-    (componentType) => {
-      context.componentType = componentType
-
-      if (availableFlavours.length === 0) {
-        console.warn('Could not detect any component flavour, falling back to "default"')
-        return Promise.resolve('default')
-      }
-
-      if (availableFlavours.length === 1) {
-        return Promise.resolve(availableFlavours[0])
-      }
-
-      return promptly.choose('Choose a flavour (' + availableFlavours.join(', ') + '): ', availableFlavours)
-    },
-  ).then(
-    (flavour) => {
-      generateComponentFiles(fullTemplatePath, componentPath, context.componentName, context.componentType, flavour, availableFlavours)
-    },
-  )
+async function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath) {
+  const componentName = await promptly.prompt('Component Name (kebab-case): ', {validator: validateKebabCaseName})
+  const componentType = await promptly.choose('Choose a type (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
+  const flavour = await promptFlavour(availableFlavours)
+  generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours)
 }
 
 /**
@@ -45,30 +39,16 @@ function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemp
  * @param {string} componentPath
  * @return {Promise<void>}
  */
-function processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath) {
-  const context = {}
+async function processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath) {
   if (availableFlavours.length <= 1) {
-    throw new Error('Could not detect more than 1 flavour, upgrade is not possible')
+    console.error('Could not detect more than 1 flavour, upgrade is not possible')
+    return
   }
 
-  return promptly.prompt('Component Name (kebab-case): ', {validator: validateKebabCaseName})
-    .then(
-      (componentName) => {
-        context.componentName = componentName
-        return promptly.choose('Which type is your component? (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
-      },
-    )
-    .then(
-      (componentType) => {
-        context.componentType = componentType
-
-        return promptly.choose('Choose a flavour to upgrade (' + availableFlavours.join(', ') + '): ', availableFlavours)
-      },
-    ).then(
-      (flavour) => {
-        generateFilesIfNotExistAlready(fullTemplatePath, componentPath, context.componentName, context.componentType, flavour, availableFlavours)
-      },
-    )
+  const componentName = await promptly.prompt('Component Name (kebab-case): ', {validator: validateKebabCaseName})
+  const componentType = await promptly.choose('Which type is your component? (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
+  const flavour = await promptFlavour(availableFlavours, 'Choose a flavour to upgrade')
+  generateFilesIfNotExistAlready(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours)
 }
 
 /**
