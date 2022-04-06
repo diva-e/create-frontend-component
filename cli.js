@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 
 const program = require('commander')
-const { generateComponentFiles, generateFilesIfNotExistAlready} = require('./src/gulpfile')
-const fs = require('fs')
 const path = require('path')
-const promptly = require('promptly')
 const { readFileSync } = require('fs')
-const { copySync } = require('fs-extra')
-const { getDirectories, validateKebabCaseName } = require('./src/utilities')
+const { getDirectories } = require('./src/utilities')
+const { processPromptCommand, processUpgradeCommand, processCreateComponentCommand, processInitCommand } = require('./src/commands')
 
 const CONFIG_DIRECTORY = '.create-frontend-component'
 const CONFIG_FILE_NAME = 'config.json'
@@ -20,9 +17,7 @@ const configDefaults = {
   componentPath: 'src/components'
 }
 
-
 /**
- * @param {string} filePath 
  * @return {object}
  */
 function loadConfig() {
@@ -37,49 +32,14 @@ function loadConfig() {
   }
 }
 
-/**
- * Creates config directory and adds config file
- * @param {string} presetPath
- */
-function initProjectInWorkingDirectory(presetPath) {
-  // Create directory
-  const configPath = path.join(process.cwd(), CONFIG_DIRECTORY)
-  if (!fs.existsSync(configPath)){
-    console.log('\nCreate directory ' + CONFIG_DIRECTORY)
-    fs.mkdirSync(configPath)
-  }
-  // Create Config File
-  const configJSON = JSON.stringify(configDefaults)
-  const configFilePath = path.join(CONFIG_DIRECTORY, CONFIG_FILE_NAME)
-  if (!fs.existsSync(configFilePath)){
-    console.log('Create config file ' + configFilePath)
-    fs.writeFileSync(configFilePath, configJSON, {encoding: 'utf-8' })
-  }
-
-  const defaultTemplatePath = path.join(CONFIG_DIRECTORY, 'templates')
-  if (!fs.existsSync(defaultTemplatePath)){
-    console.log('Create templates directory ' + defaultTemplatePath)
-    fs.mkdirSync(defaultTemplatePath)
-  }
-  try {
-    copySync(presetPath, defaultTemplatePath, { overwrite: true })
-    console.log('\nTemplates were created and transfered successfully')
-  } catch (error) {
-    console.error('Error: unable to copy presets', error)
-  }
-}
-
 program
   .version('1.1.0')
   .arguments('<component-name>')
   .option( '-t, --type <type>', 'Component type, default: atoms')
   .option( '-f, --flavour <flavour>', 'Component flavour')
-  .action( function(componentName, env) {
+  .action( async function(componentName, env) {
     if (componentName.toLowerCase() === 'init') {
-      const availablePresets = getDirectories(PRESET_PATH)
-      promptly.choose('Choose a preset (' + availablePresets.join(', ') + '): ', availablePresets).then(
-        (presetName) => initProjectInWorkingDirectory(path.join(PRESET_PATH, presetName))
-      )
+      await processInitCommand(PRESET_PATH, CONFIG_DIRECTORY, CONFIG_FILE_NAME, configDefaults)
       return
     }
 
@@ -89,84 +49,11 @@ program
     const availableFlavours = getDirectories(fullTemplatePath)
 
     if (componentName.toLowerCase() === 'prompt') {
-      const context = {}
-      promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName }).then(
-        (componentName) => {
-          context.componentName = componentName
-          return promptly.choose('Choose a type (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
-        }
-      ).then(
-        (componentType) => {
-          context.componentType = componentType
-
-          if (availableFlavours.length === 0) {
-            console.warn('Could not detect any component flavour, falling back to "default"')
-            return Promise.resolve('default')
-          }
-
-          if (availableFlavours.length === 1) {
-            return Promise.resolve(availableFlavours[0])
-          }
-
-          return promptly.choose('Choose a flavour (' + availableFlavours.join(', ') + '): ', availableFlavours)
-        }
-      ).then(
-        (flavour) => {
-          generateComponentFiles(fullTemplatePath, componentPath, context.componentName, context.componentType, flavour, availableFlavours)
-          return
-        }
-      )
-      return
-    }
-
-    if (componentName.toLowerCase() === 'upgrade') {
-      const context = {}
-      if (availableFlavours.length <= 1) {
-        console.warn('Could not detect more than 1 flavour, upgrade is not possible')
-        return
-      }
-
-      promptly.prompt('Component Name (kebab-case): ', { validator: validateKebabCaseName })
-        .then(
-          (componentName) => {
-            context.componentName = componentName
-            return promptly.choose('Which type is your component? (' + allowedComponentTypes.join(', ') + '): ', allowedComponentTypes)
-          }
-        )
-        .then(
-          (componentType) => {
-            context.componentType = componentType
-
-            return promptly.choose('Choose a flavour to upgrade (' + availableFlavours.join(', ') + '): ', availableFlavours)
-          }
-        ).then(
-          (flavour) => {
-            generateFilesIfNotExistAlready(fullTemplatePath, componentPath, context.componentName, context.componentType, flavour, availableFlavours)
-            return
-          }
-        )
-      return
-    }
-
-
-    if (env.type && allowedComponentTypes.length == 0) {
-      throw new Error('component types are not configured in this project but found parameter "type"')
-    }
-
-    let componentType = env.type
-    if (allowedComponentTypes.length === 0) {
-      componentType = null
-    } else if (!componentType) {
-      // use first type as default
-      componentType = allowedComponentTypes[0]
+      await processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath)
+    } else if (componentName.toLowerCase() === 'upgrade') {
+      await processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath)
     } else {
-      componentType = componentType.toLowerCase()
+      processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours)
     }
-
-    if (componentType && !allowedComponentTypes.includes(componentType)) {
-      throw new Error(`component type '${componentType}' is not allowed, choose one of: ${allowedComponentTypes}`)
-    }
-
-    generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, env.flavour, availableFlavours)
   })
   .parse(process.argv)

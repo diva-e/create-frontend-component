@@ -77,7 +77,7 @@
     "gulp-rename": "^2.0.0",
     "gulp-replace": "^1.0.0",
     "gulp-template": "^5.0.0",
-    "promptly": "^3.2.0",
+    "prompts": "^2.4.2",
     "yargs": "^15.4.0"
   },
   "devDependencies": {
