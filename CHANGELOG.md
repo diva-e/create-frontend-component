@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/diva-e/create-frontend-component/compare/v1.1.0...v1.2.0) (2022-04-06)
+
+A bunch of new features and improvements have been added during the _diva-e Hackathon "Open Source" 2022_.
+Thanks for participating at this event.
+
+### Features
+
+* add react class and function template ([2a90597](https://github.com/diva-e/create-frontend-component/commit/2a905971af3ed0b09ec1d8470da510a2bf53ed3e))
+* add additional nuxt presets ([68374a9](https://github.com/diva-e/create-frontend-component/commit/68374a909aba8377deb76e8defd55af0eeeac608))
+* implement upgrade command ([cf67385](https://github.com/diva-e/create-frontend-component/commit/cf673853d27ca1d53bc804185309f6f5b529f1d3))
+* improve error logging for create component command ([3926f16](https://github.com/diva-e/create-frontend-component/commit/3926f16accf525894cb6ef4408fed72dd46077e7))
+* add react class and function to same presents main folder ([3fbbed3](https://github.com/diva-e/create-frontend-component/commit/3fbbed398dde2fa5eb6a6198de149ef0a1761920))
+* replace promptly with prompts library ([9e7e5a4](https://github.com/diva-e/create-frontend-component/commit/9e7e5a4fc9c42cd950f3c62a8f65738c382395e9)), closes [#3](https://github.com/diva-e/create-frontend-component/issues/3)
+
 ## [1.1.0](https://github.com/diva-e/create-frontend-component/compare/v1.0.0...v1.1.0) (2021-07-01)
 
 
