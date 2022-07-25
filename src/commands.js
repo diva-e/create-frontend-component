@@ -28,7 +28,12 @@ async function promptFlavour(availableFlavours, label = 'Choose a flavour') {
  */
 async function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath) {
   const componentName = await promptText('Component Name (kebab-case)', validateKebabCaseName)
-  const componentType = await promptSingleSelect('Choose a type', allowedComponentTypes)
+  let componentType
+  if (allowedComponentTypes && allowedComponentTypes.length > 0) {
+    componentType = await promptSingleSelect('Choose a type', allowedComponentTypes)
+  } else {
+    componentType = null
+  }
   const flavour = await promptFlavour(availableFlavours)
   generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours)
 }
