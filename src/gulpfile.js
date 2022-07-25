@@ -78,7 +78,7 @@ function generateFiles(resolvedTemplatePath, name, componentType, upperCamelCase
  * @param {string} fullTemplatePath
  * @param {string} componentPath
  * @param {string} name
- * @param {string} componentType
+ * @param {string | null} componentType
  * @param {string} flavour
  * @param {Array<string>} availableFlavours
  * @return {any}
