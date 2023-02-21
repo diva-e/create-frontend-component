@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/diva-e/create-frontend-component/compare/v1.4.0...v1.4.1) (2023-02-21)
+
+
+### Bug Fixes
+
+* prevent spaces in component names ([255cbaf](https://github.com/diva-e/create-frontend-component/commit/255cbafc4c5de3432826b9b7a42fe147a8639720))
+
 ## [1.4.0](https://github.com/diva-e/create-frontend-component/compare/v1.3.1...v1.4.0) (2023-02-21)
 
 
