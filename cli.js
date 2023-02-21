@@ -33,7 +33,7 @@ function loadConfig() {
 }
 
 program
-  .version('1.2.0')
+  .version('1.3.1')
   .arguments('<component-name>')
   .option( '-t, --type <type>', 'Component type, default: atoms')
   .option( '-f, --flavour <flavour>', 'Component flavour')
