@@ -25,10 +25,11 @@ A config file and `.create-frontend-component` directory will be created aswell.
 Init creates the  `.create-frontend-component/config.json` config file.
 Edit _config.json_ until it fits your needs, the following options are available:
 
-* **types**: Set of component types which developers can choose from. They will be represented as a subdirectory in your components dir.
+* **types**: Set of component types which developers can choose from. They will be represented as a subdirectory in your `components` directory.
 Set this to null if you don't categorize components.
 * **templatePath**: Directory in which component templates live. The path is relative to the working directory.
 * **componentPath**: Directory in which components will be generated. The path is relative to the working directory.
+* **nameStyle**: Available styles: `kebabCase` and `pascalCase`. Defines how file names and directories are being renamed. 
 
 ### Customize Component Templates
 
