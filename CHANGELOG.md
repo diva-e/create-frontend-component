@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/diva-e/create-frontend-component/compare/v1.3.1...v1.4.0) (2023-02-21)
+
+
+### Features
+
+* enable kebab case component names ([48bb1ca](https://github.com/diva-e/create-frontend-component/commit/48bb1cabf39a758786094ed9e02cba936fef861f))
+
+
+### Bug Fixes
+
+* fix grammar in prompt of upgrade command ([66e99e9](https://github.com/diva-e/create-frontend-component/commit/66e99e97460b371077a9d1bc06ce1555fdf7d8bc))
+
 ### [1.3.1](https://github.com/diva-e/create-frontend-component/compare/v1.3.0...v1.3.1) (2023-02-21)
 
 ## [1.3.0](https://github.com/diva-e/create-frontend-component/compare/v1.1.0...v1.3.0) (2022-09-22)
