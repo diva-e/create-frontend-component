@@ -24,25 +24,25 @@ function getFiles(path) {
  * @param {string} val
  * @return {string}
  */
-function toTitleCase (val) {
+function toTitleCase(val) {
   return val.charAt(0).toUpperCase() + val.slice(1)
 }
 
 /**
-   * @param {string} val
-   * @return {string}
-   */
-function toFirstLetterLowerCase (val) {
+ * @param {string} val
+ * @return {string}
+ */
+function toFirstLetterLowerCase(val) {
   return val.charAt(0).toLowerCase() + val.slice(1)
 }
 
 /**
-   * @param {string} val
-   * @return {string}
-   */
+ * @param {string} val
+ * @return {string}
+ */
 function toUpperCamelCase(val) {
   return val.split('-').map(
-    (part) => toTitleCase(part)
+    (part) => toTitleCase(part),
   ).join('')
 }
 
@@ -50,7 +50,7 @@ function toUpperCamelCase(val) {
  * @param {string} name
  * @return {string | boolean}
  */
-function validateKebabCaseName (name) {
+function validateKebabCaseName(name) {
   if (name !== name.toLowerCase() || name.indexOf('_') !== -1) {
     return `component name '${name}' is not allowed, please use kebab case names eg. foo-bar-toolbar`
   }

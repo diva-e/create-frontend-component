@@ -24,9 +24,10 @@ async function promptFlavour(availableFlavours, label = 'Choose a flavour') {
  * @param {Array<string>} availableFlavours
  * @param {string} fullTemplatePath
  * @param {string} componentPath
+ * @param {string} nameStyle: eg. pascalCase, kebabCase
  * @return {Promise<void>}
  */
-async function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath) {
+async function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle) {
   const componentName = await promptText('Component Name (kebab-case)', validateKebabCaseName)
   let componentType
   if (allowedComponentTypes && allowedComponentTypes.length > 0) {
@@ -35,7 +36,7 @@ async function processPromptCommand(allowedComponentTypes, availableFlavours, fu
     componentType = null
   }
   const flavour = await promptFlavour(availableFlavours)
-  generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours)
+  generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours, nameStyle)
 }
 
 /**
@@ -43,18 +44,19 @@ async function processPromptCommand(allowedComponentTypes, availableFlavours, fu
  * @param {Array<string>} allowedComponentTypes
  * @param {string} fullTemplatePath
  * @param {string} componentPath
+ * @param {string} nameStyle
  * @return {Promise<void>}
  */
-async function processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath) {
+async function processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath, nameStyle) {
   if (availableFlavours.length <= 1) {
     console.error('Could not detect more than 1 flavour, upgrade is not possible')
     return
   }
 
   const componentName = await promptText('Component Name (kebab-case)', validateKebabCaseName)
-  const componentType = await promptSingleSelect('Which type is your component?', allowedComponentTypes)
+  const componentType = await promptSingleSelect('Choose the type', allowedComponentTypes)
   const flavour = await promptFlavour(availableFlavours, 'Choose a flavour to upgrade')
-  generateFilesIfNotExistAlready(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours)
+  generateFilesIfNotExistAlready(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours, nameStyle)
 }
 
 /**
@@ -64,8 +66,9 @@ async function processUpgradeCommand(availableFlavours, allowedComponentTypes, f
  * @param {string} componentPath
  * @param {string} componentName
  * @param {Array<string>} availableFlavours
+ * @param {string} nameStyle: eg. 'pascalCase', 'kebabCase'
  */
-function processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours) {
+function processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours, nameStyle) {
   if (env.type && allowedComponentTypes.length === 0) {
     throw new Error('component types are not configured in this project but found parameter "type"')
   }
@@ -85,7 +88,7 @@ function processCreateComponentCommand(env, allowedComponentTypes, fullTemplateP
     throw new Error('component type not found')
   }
 
-  generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, env.flavour, availableFlavours)
+  generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, env.flavour, availableFlavours, nameStyle)
 }
 
 /**

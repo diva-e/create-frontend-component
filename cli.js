@@ -14,7 +14,8 @@ const PRESET_PATH = path.join(__dirname, PRESET_DIR)
 const configDefaults = {
   types: ['atoms', 'molecules', 'organisms'],
   templatePath: CONFIG_DIRECTORY + '/templates',
-  componentPath: 'src/components'
+  componentPath: 'src/components',
+  nameStyle: 'pascalCase'
 }
 
 /**
@@ -43,17 +44,17 @@ program
       return
     }
 
-    const { types, templatePath, componentPath } = loadConfig()
+    const { types, templatePath, componentPath, nameStyle } = loadConfig()
     const allowedComponentTypes = types || []
     const fullTemplatePath = path.join(process.cwd(), templatePath)
     const availableFlavours = getDirectories(fullTemplatePath)
 
     if (componentName.toLowerCase() === 'prompt') {
-      await processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath)
+      await processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle)
     } else if (componentName.toLowerCase() === 'upgrade') {
-      await processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath)
+      await processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath, nameStyle)
     } else {
-      processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours)
+      processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours, nameStyle)
     }
   })
   .parse(process.argv)
