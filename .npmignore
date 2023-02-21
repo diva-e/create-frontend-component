@@ -5,3 +5,5 @@ create-frontend-component.code-workspace
 .eslintrc.json
 playground
 .idea
+.editorconfig
+.eslintignore
