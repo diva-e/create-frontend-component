@@ -1,5 +1,6 @@
 {
     "types": ["atoms", "molecules", "organisms"],
     "templatePath": ".create-frontend-component/templates",
-    "componentPath": "src/components"
+    "componentPath": "src/components",
+    "nameStyle": "pascalCase"
 }
