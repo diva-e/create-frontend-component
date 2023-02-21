@@ -4,3 +4,4 @@ create-frontend-component.code-workspace
 .commitlintrc.json
 .eslintrc.json
 playground
+.idea
