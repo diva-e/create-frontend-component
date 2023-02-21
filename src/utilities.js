@@ -51,7 +51,7 @@ function toUpperCamelCase(val) {
  * @return {string | boolean}
  */
 function validateKebabCaseName(name) {
-  if (name !== name.toLowerCase() || name.indexOf('_') !== -1) {
+  if (name !== name.toLowerCase() || name.indexOf('_') !== -1 || name.indexOf(' ') !== -1) {
     return `component name '${name}' is not allowed, please use kebab case names eg. foo-bar-toolbar`
   }
 
