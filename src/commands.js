@@ -54,7 +54,7 @@ async function processUpgradeCommand(availableFlavours, allowedComponentTypes, f
   }
 
   const componentName = await promptText('Component Name (kebab-case)', validateKebabCaseName)
-  const componentType = await promptSingleSelect('Which type is your component?', allowedComponentTypes)
+  const componentType = await promptSingleSelect('Choose the type', allowedComponentTypes)
   const flavour = await promptFlavour(availableFlavours, 'Choose a flavour to upgrade')
   generateFilesIfNotExistAlready(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours, nameStyle)
 }
