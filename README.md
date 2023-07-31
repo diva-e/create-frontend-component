@@ -71,6 +71,25 @@ For convenience reasons you might want to add this tool to _package.json_ script
 However, the way to add cli parameters to npm scripts might be unintuitive for developers.
 That is the reason we added the `prompt` subcommand.
 
+Add a script like this:
+
+```json
+{
+  "name": "foo-bar-project",
+  "version": "1.0.0",
+  "scripts": {
+    "create-component": "npx create-frontend-component prompt"
+  }
+}
+```
+
+That's it!
+When executing `npm run create-component` the user now will be prompted for all necessary parameters.
+
+#### Alternative without npx
+If you don't want to use npx for some reason, then it is possible to install the package as dev dependency and run the command without npx.
+Please be aware that this approach leads to several issues on a npm audit.
+
 First install the package as dev dependency:
 
 ```bash
@@ -88,8 +107,6 @@ Then add a script like this:
   }
 }
 ```
-
-When executing `npm run create-component` the user now will be prompted for all necessary parameters.
 
 ### Component upgrade
 
