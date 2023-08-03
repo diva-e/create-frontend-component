@@ -87,6 +87,7 @@ That's it!
 When executing `npm run create-component` the user now will be prompted for all necessary parameters.
 
 #### Alternative without npx
+
 If you don't want to use npx for some reason, then it is possible to install the package as dev dependency and run the command without npx.
 Please be aware that this approach leads to several issues on a npm audit.
 
