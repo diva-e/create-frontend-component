@@ -71,15 +71,15 @@
     "url": "https://github.com/diva-e/create-frontend-component/issues"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
-    "commander": "^7.2.0",
-    "fs-extra": "^9.1.0",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "fs-extra": "^11.3.0",
     "gulp": "^5.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-replace": "^1.1.4",
     "gulp-template": "^6.0.0",
     "prompts": "^2.4.2",
-    "yargs": "^15.4.0"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.7.1",
@@ -88,5 +88,8 @@
     "husky": "^6.0.0",
     "lint-staged": "^10.5.4",
     "standard-version": "^9.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

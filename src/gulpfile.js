@@ -16,7 +16,8 @@ import {
 
 
 import fs from 'fs'
-import { copySync } from 'fs-extra'
+import fsExtra from 'fs-extra'
+const { copySync } = fsExtra
 
 
 const DEFAULT_FLAVOUR_NAME = 'default'
@@ -87,8 +88,6 @@ function generateFiles(
     resultingName = upperCamelCaseName
     break
   }
-
-  console.log(gulpTemplate)
 
   return gulp.src(resolvedTemplatePath)
     .pipe(gulpTemplate({
