@@ -10,7 +10,7 @@ Framework-agnostic utility to scaffold frontend components by using custom templ
 
 ## Getting Started
 
-### Init (creates directories and configuration file)
+### Initialization (Creates Directories and Configuration File)
 
 ```bash
 npx create-frontend-component init
@@ -22,14 +22,23 @@ A config file and `.create-frontend-component` directory will be created aswell.
 
 ### Configuration
 
-Init creates the  `.create-frontend-component/config.json` config file.
-Edit _config.json_ until it fits your needs, the following options are available:
+The `init` command creates the `.create-frontend-component/config.json` configuration file.
+Modify _config.json_ to suit your needs. The following options are available:
 
-* **types**: Set of component types which developers can choose from. They will be represented as a subdirectory in your `components` directory.
+```json
+{
+    "types": ["atoms", "molecules", "organisms"],
+    "templatePath": ".create-frontend-component/templates",
+    "componentPath": "src/components",
+    "nameStyle": "pascalCase"
+}
+```
+
+* **types**:  A set of component types developers can choose from. Each type corresponds to a subdirectory in your components directory. 
 Set this to null if you don't categorize components.
-* **templatePath**: Directory in which component templates live. The path is relative to the working directory.
-* **componentPath**: Directory in which components will be generated. The path is relative to the working directory.
-* **nameStyle**: Available styles: `kebabCase` and `pascalCase`. Defines how file names and directories are being renamed. 
+* **templatePath**:  Directory where templates of components reside (relative to the working directory).
+* **componentPath**: Directory where components will be generated (relative to the working directory).
+* **nameStyle**: Defines how file names and directories are renamed. Available styles: `kebabCase` and `pascalCase`. 
 
 ### Customize Component Templates
 
@@ -56,8 +65,16 @@ rename them and replace all placeholders. In this example a `.mdx` file and a `.
 
 ## Usage
 
+Interactive Mode (Prompt Mode):
+
 ```bash
-create-frontend-component foo-bar-toolbar --type molecules --flavour minimal
+npx create-frontend-component prompt
+```
+
+Alternatively you can pass parameters directly:
+
+```bash
+npx create-frontend-component foo-bar-toolbar --type molecules --flavour minimal
 ```
 
 * Names must be written in lower case and with dash as word separator (kebab-case)
@@ -65,28 +82,23 @@ create-frontend-component foo-bar-toolbar --type molecules --flavour minimal
 
 Component files will be generated under the configured component path.
 
-### NPM-Script Usage
+### Using NPM Scripts
 
-For convenience reasons you might want to add this tool to _package.json_ scripts.
-However, the way to add cli parameters to npm scripts might be unintuitive for developers.
-That is the reason we added the `prompt` subcommand.
-
-Add a script like this:
+To simplify usage, you can add this tool as an NPM script in package.json.
 
 ```json
 {
   "name": "foo-bar-project",
   "version": "1.0.0",
   "scripts": {
-    "create-component": "npx create-frontend-component prompt"
+    "create-component": "npx create-frontend-component"
   }
 }
 ```
 
-That's it!
-When executing `npm run create-component` the user now will be prompted for all necessary parameters.
+Now, running `npm run create-component` will prompt the user for all necessary parameters.
 
-#### Alternative without npx
+#### Alternative Without npx
 
 If you don't want to use npx for some reason, then it is possible to install the package as dev dependency and run the command without npx.
 Please be aware that this approach leads to several issues on a npm audit.
@@ -104,16 +116,22 @@ Then add a script like this:
   "name": "foo-bar-project",
   "version": "1.0.0",
   "scripts": {
-    "create-component": "create-frontend-component prompt"
+    "create-component": "create-frontend-component"
   }
 }
 ```
 
-### Component upgrade
+### Mixing Flavours
 
-We have also introduced the command `create-frontend-component upgrade` that enables you the possibility
-to change the flavour of a component, adding the files of the new flavour that are missing in the component.
-Using this upgrade function, none of the existing files of a component will be removed.
+The create-frontend-component upgrade command allows you to change the flavour of a component.
+It adds the missing files of the new flavour while preserving existing files.
+
+````bash
+npx create-frontend-component upgrade
+````
+
+* No existing files will be removed. 
+* If conflicting files exist, they will remain unchanged.
 
 ## License
 
