@@ -143,7 +143,7 @@ export function generateComponentFiles(fullTemplatePath, componentPath, name, co
     break
   }
 
-  const relativeDestinationPath = componentType ? path.join(componentType, replacedNameInPath) : upperCamelCaseName
+  const relativeDestinationPath = componentType ? path.join(componentType, replacedNameInPath) : replacedNameInPath
   const destinationPath = path.join(componentPath, relativeDestinationPath)
   const resolvedTemplatePath = path.join(
     fullTemplatePath,
@@ -192,7 +192,7 @@ export function generateFilesIfNotExistAlready(fullTemplatePath, componentPath, 
   const templateFiles = getFiles(path.join(fullTemplatePath, effectiveFlavour, 'ComponentTemplate'))
 
   const filesToAdd = templateFiles.filter(fileName => {
-    const tmpName = fileName.replace('ComponentTemplate', upperCamelCaseName)
+    const tmpName = fileName.replace('ComponentTemplate', replacedNameInPath)
     return !existingFiles.includes(tmpName)
   })
 
@@ -203,7 +203,7 @@ export function generateFilesIfNotExistAlready(fullTemplatePath, componentPath, 
       'ComponentTemplate/**/' + newFile,
     )
 
-    const endMessage = `New file '${newFile.replace('ComponentTemplate', upperCamelCaseName)}' created`
+    const endMessage = `New file '${newFile.replace('ComponentTemplate', replacedNameInPath)}' created`
     generateFiles(resolvedTemplatePath, name, componentType, relativeDestinationPath, destinationPath, endMessage, nameStyle)
   })
 }
