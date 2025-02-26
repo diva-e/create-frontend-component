@@ -103,6 +103,9 @@ function generateFiles(
     }))
     .pipe(gulp.dest(destinationPath))
     .on('end', function () {
+      // FIXME: this line break is only used due to a node warning "DeprecationWarning: fs.Stats constructor is deprecated"
+      //  which decreases readability. Remove it as soon as the issue was fixed in the gulp package which caused the issue
+      console.log('\n')
       console.log(endMessage)
     })
 }
