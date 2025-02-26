@@ -46,10 +46,12 @@ function loadConfig() {
 
 program
   .version('2.0.0')
-  .command('create-frontend-component <component-name>') // Define the command
+  .command('create-frontend-component [component-name]') // Define the command
   .option( '-t, --type <type>', 'Component type, default: atoms')
   .option( '-f, --flavour <flavour>', 'Component flavour')
-  .action( async function(componentName, env) {
+  .action( async function(componentNameArg, env) {
+    const componentName = componentNameArg || ''
+
     if (componentName.toLowerCase() === 'init') {
       await processInitCommand(PRESET_PATH, CONFIG_DIRECTORY, CONFIG_FILE_NAME, configDefaults)
       return
@@ -60,7 +62,7 @@ program
     const fullTemplatePath = path.join(process.cwd(), templatePath)
     const availableFlavours = getDirectories(fullTemplatePath)
 
-    if (componentName.toLowerCase() === 'prompt') {
+    if (componentName.toLowerCase() === 'prompt' || !componentName.trim()) {
       await processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle)
     } else if (componentName.toLowerCase() === 'upgrade') {
       await processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath, nameStyle)
