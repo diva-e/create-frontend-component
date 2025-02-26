@@ -1,10 +1,10 @@
-const { readdirSync, existsSync } = require('fs')
+import { existsSync, readdirSync } from 'fs'
 
 /**
  * @param {string} source
  * @return {Array}
  */
-function getDirectories(source) {
+export function getDirectories(source) {
   return readdirSync(source, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name)
@@ -14,7 +14,7 @@ function getDirectories(source) {
  * @param {string} path
  * @return {Array}
  */
-function getFiles(path) {
+export function getFiles(path) {
   return readdirSync(path, { withFileTypes: true })
     .filter(obj => obj.isFile())
     .map(file => file.name)
@@ -24,7 +24,7 @@ function getFiles(path) {
  * @param {string} val
  * @return {string}
  */
-function toTitleCase(val) {
+export function toTitleCase(val) {
   return val.charAt(0).toUpperCase() + val.slice(1)
 }
 
@@ -32,7 +32,7 @@ function toTitleCase(val) {
  * @param {string} val
  * @return {string}
  */
-function toFirstLetterLowerCase(val) {
+export function toFirstLetterLowerCase(val) {
   return val.charAt(0).toLowerCase() + val.slice(1)
 }
 
@@ -40,7 +40,7 @@ function toFirstLetterLowerCase(val) {
  * @param {string} val
  * @return {string}
  */
-function toUpperCamelCase(val) {
+export function toUpperCamelCase(val) {
   return val.split('-').map(
     (part) => toTitleCase(part),
   ).join('')
@@ -50,7 +50,7 @@ function toUpperCamelCase(val) {
  * @param {string} name
  * @return {string | boolean}
  */
-function validateKebabCaseName(name) {
+export function validateKebabCaseName(name) {
   if (name !== name.toLowerCase() || name.indexOf('_') !== -1 || name.indexOf(' ') !== -1) {
     return `component name '${name}' is not allowed, please use kebab case names eg. foo-bar-toolbar`
   }
@@ -61,18 +61,8 @@ function validateKebabCaseName(name) {
 /**
  * @param {string} destinationPath
  */
-function validateDirectoryExists(destinationPath) {
+export function validateDirectoryExists(destinationPath) {
   if (!existsSync(destinationPath)) {
     throw new Error(`'${destinationPath}' does not exist, please try again`)
   }
-}
-
-module.exports = {
-  getDirectories,
-  getFiles,
-  toTitleCase,
-  toFirstLetterLowerCase,
-  toUpperCamelCase,
-  validateKebabCaseName,
-  validateDirectoryExists,
 }

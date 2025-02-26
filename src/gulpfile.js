@@ -1,19 +1,23 @@
 'use strict'
 
-const gulp = require('gulp')
-const path = require('path')
-const rename = require('gulp-rename')
-const template = require('gulp-template')
-const {
-  toTitleCase,
-  toFirstLetterLowerCase,
-  toUpperCamelCase,
-  validateKebabCaseName,
-  validateDirectoryExists,
+import gulp from 'gulp'
+import path from 'path'
+import rename from 'gulp-rename'
+import gulpTemplate from 'gulp-template'
+
+import {
   getFiles,
-} = require('./utilities')
-const fs = require('fs')
-const { copySync } = require('fs-extra')
+  toFirstLetterLowerCase,
+  toTitleCase,
+  toUpperCamelCase,
+  validateDirectoryExists,
+  validateKebabCaseName,
+} from './utilities.js'
+
+
+import fs from 'fs'
+import { copySync } from 'fs-extra'
+
 
 const DEFAULT_FLAVOUR_NAME = 'default'
 
@@ -25,7 +29,7 @@ const DEFAULT_FLAVOUR_NAME = 'default'
  * @param {string} configFileName
  * @param {object} configDefaults
  */
-function initProjectInWorkingDirectory(presetPath, configDirectory, configFileName, configDefaults) {
+export function initProjectInWorkingDirectory(presetPath, configDirectory, configFileName, configDefaults) {
   // Create directory
   const configPath = path.join(process.cwd(), configDirectory)
   if (!fs.existsSync(configPath)) {
@@ -84,8 +88,10 @@ function generateFiles(
     break
   }
 
+  console.log(gulpTemplate)
+
   return gulp.src(resolvedTemplatePath)
-    .pipe(template({
+    .pipe(gulpTemplate({
       name: name,
       componentType: componentType ? toTitleCase(componentType) : 'Component',
       upperCamelCaseName,
@@ -112,7 +118,7 @@ function generateFiles(
  * @param {string} nameStyle
  * @return {any}
  */
-function generateComponentFiles(fullTemplatePath, componentPath, name, componentType, flavour, availableFlavours, nameStyle = 'pascalCase') {
+export function generateComponentFiles(fullTemplatePath, componentPath, name, componentType, flavour, availableFlavours, nameStyle = 'pascalCase') {
   const validationResult = validateKebabCaseName(name) // returns true or message
   if (validationResult !== true) {
     console.error(validationResult)
@@ -159,7 +165,7 @@ function generateComponentFiles(fullTemplatePath, componentPath, name, component
  * @param {Array<string>} availableFlavours
  * @param {string} nameStyle
  */
-function generateFilesIfNotExistAlready(fullTemplatePath, componentPath, name, componentType, flavour, availableFlavours, nameStyle = 'pascalCase') {
+export function generateFilesIfNotExistAlready(fullTemplatePath, componentPath, name, componentType, flavour, availableFlavours, nameStyle = 'pascalCase') {
   const upperCamelCaseName = toUpperCamelCase(name)
 
   let replacedNameInPath
@@ -201,10 +207,4 @@ function generateFilesIfNotExistAlready(fullTemplatePath, componentPath, name, c
     const endMessage = `New file '${newFile.replace('ComponentTemplate', upperCamelCaseName)}' created`
     generateFiles(resolvedTemplatePath, name, componentType, relativeDestinationPath, destinationPath, endMessage, nameStyle)
   })
-}
-
-module.exports = {
-  generateComponentFiles,
-  generateFilesIfNotExistAlready,
-  initProjectInWorkingDirectory,
 }

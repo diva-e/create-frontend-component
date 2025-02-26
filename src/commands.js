@@ -1,7 +1,9 @@
-const { validateKebabCaseName, getDirectories } = require('./utilities')
-const { generateComponentFiles, generateFilesIfNotExistAlready, initProjectInWorkingDirectory } = require('./gulpfile')
-const path = require('path')
-const { promptSingleSelect, promptText } = require('./prompt-utilities')
+import path from 'path'
+
+import { getDirectories, validateKebabCaseName } from './utilities.js'
+import { generateComponentFiles, generateFilesIfNotExistAlready, initProjectInWorkingDirectory } from './gulpfile.js'
+import { promptSingleSelect, promptText } from './prompt-utilities.js'
+
 
 /**
  * @param {Array<string>} availableFlavours
@@ -24,10 +26,10 @@ async function promptFlavour(availableFlavours, label = 'Choose a flavour') {
  * @param {Array<string>} availableFlavours
  * @param {string} fullTemplatePath
  * @param {string} componentPath
- * @param {string} nameStyle: eg. pascalCase, kebabCase
+ * @param {string} nameStyle eg. pascalCase, kebabCase
  * @return {Promise<void>}
  */
-async function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle) {
+export async function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle) {
   const componentName = await promptText('Component Name (kebab-case)', validateKebabCaseName)
   let componentType
   if (allowedComponentTypes && allowedComponentTypes.length > 0) {
@@ -47,7 +49,7 @@ async function processPromptCommand(allowedComponentTypes, availableFlavours, fu
  * @param {string} nameStyle
  * @return {Promise<void>}
  */
-async function processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath, nameStyle) {
+export async function processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath, nameStyle) {
   if (availableFlavours.length <= 1) {
     console.error('Could not detect more than 1 flavour, upgrade is not possible')
     return
@@ -66,9 +68,9 @@ async function processUpgradeCommand(availableFlavours, allowedComponentTypes, f
  * @param {string} componentPath
  * @param {string} componentName
  * @param {Array<string>} availableFlavours
- * @param {string} nameStyle: eg. 'pascalCase', 'kebabCase'
+ * @param {string} nameStyle eg. 'pascalCase', 'kebabCase'
  */
-function processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours, nameStyle) {
+export function processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours, nameStyle) {
   if (env.type && allowedComponentTypes.length === 0) {
     throw new Error('component types are not configured in this project but found parameter "type"')
   }
@@ -98,15 +100,9 @@ function processCreateComponentCommand(env, allowedComponentTypes, fullTemplateP
  * @param {string} configDefaults
  * @return {Promise<void>}
  */
-async function processInitCommand(presetPath, configDirectory, configFileName, configDefaults) {
+export async function processInitCommand(presetPath, configDirectory, configFileName, configDefaults) {
   const availablePresets = getDirectories(presetPath)
   const presetName = await promptSingleSelect('Choose a preset', availablePresets)
   return initProjectInWorkingDirectory(path.join(presetPath, presetName), configDirectory, configFileName, configDefaults)
 }
 
-module.exports = {
-  processUpgradeCommand,
-  processPromptCommand,
-  processCreateComponentCommand,
-  processInitCommand
-}

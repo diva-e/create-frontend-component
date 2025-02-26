@@ -1,6 +1,7 @@
 {
   "name": "create-frontend-component",
   "version": "1.4.1",
+  "type": "module",
   "description": "Framework-agnostic utility to scaffold frontend components by using custom templates",
   "scripts": {
     "test": "echo \"No test implemented yet\"",
