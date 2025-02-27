@@ -1,11 +1,11 @@
-const prompts = require('prompts')
+import prompts from 'prompts'
 
 /**
  * @param {string} message
  * @param {function} validator
  * @return {Promise<string>}
  */
-async function promptText(message, validator) {
+export async function promptText(message, validator) {
   const response = await prompts({
     type: 'text',
     name: 'value',
@@ -25,7 +25,7 @@ async function promptText(message, validator) {
  * @param {Array<string>} choices
  * @return {Promise<string>}
  */
-async function promptSingleSelect(message, choices) {
+export async function promptSingleSelect(message, choices) {
   const response = await prompts({
     type: 'select',
     name: 'value',
@@ -38,9 +38,4 @@ async function promptSingleSelect(message, choices) {
   }
 
   return response.value
-}
-
-module.exports = {
-  promptText,
-  promptSingleSelect
 }

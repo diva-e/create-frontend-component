@@ -1,10 +1,21 @@
 #!/usr/bin/env node
 
-const program = require('commander')
-const path = require('path')
-const { readFileSync } = require('fs')
-const { getDirectories } = require('./src/utilities')
-const { processPromptCommand, processUpgradeCommand, processCreateComponentCommand, processInitCommand } = require('./src/commands')
+import { program } from 'commander'
+
+import {
+  processCreateComponentCommand,
+  processInitCommand,
+  processPromptCommand,
+  processUpgradeCommand,
+} from './src/commands.js'
+import { getDirectories } from './src/utilities.js'
+import { readFileSync } from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 
 const CONFIG_DIRECTORY = '.create-frontend-component'
 const CONFIG_FILE_NAME = 'config.json'
@@ -34,11 +45,13 @@ function loadConfig() {
 }
 
 program
-  .version('1.4.1')
-  .arguments('<component-name>')
+  .version('2.0.0')
+  .command('create-frontend-component [component-name]') // Define the command
   .option( '-t, --type <type>', 'Component type, default: atoms')
   .option( '-f, --flavour <flavour>', 'Component flavour')
-  .action( async function(componentName, env) {
+  .action( async function(componentNameArg, env) {
+    const componentName = componentNameArg || ''
+
     if (componentName.toLowerCase() === 'init') {
       await processInitCommand(PRESET_PATH, CONFIG_DIRECTORY, CONFIG_FILE_NAME, configDefaults)
       return
@@ -49,7 +62,7 @@ program
     const fullTemplatePath = path.join(process.cwd(), templatePath)
     const availableFlavours = getDirectories(fullTemplatePath)
 
-    if (componentName.toLowerCase() === 'prompt') {
+    if (componentName.toLowerCase() === 'prompt' || !componentName.trim()) {
       await processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle)
     } else if (componentName.toLowerCase() === 'upgrade') {
       await processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath, nameStyle)
