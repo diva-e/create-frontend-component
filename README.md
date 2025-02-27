@@ -1,6 +1,8 @@
 
 # create-frontend-component
 
+> **Version 2.0** is out now! With updated dependencies, esmodules and a few improvements. Check the changelog for more info.
+
 Framework-agnostic utility to scaffold frontend components by using custom templates.
 
 | [Contributing](/CONTRIBUTING.md) | [Changelog](/CHANGELOG.md) | [Powered by diva-e](https://www.diva-e.com)  |
