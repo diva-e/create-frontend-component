@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/diva-e/create-frontend-component/compare/v1.4.1...v2.0.0) (2025-02-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* prepare 2.0 release
+
+### Features
+
+* enable prompt mode automatically if no argument was passed ([e17c3ed](https://github.com/diva-e/create-frontend-component/commit/e17c3ed4401bed497897e451c61376e9f1589e92))
+* prepare 2.0 release ([507c07f](https://github.com/diva-e/create-frontend-component/commit/507c07f8a9489b4d775b7a10ff73a794a05bd0a9))
+
+
+### Bug Fixes
+
+* add console linesbreaks to output for better readability ([fe2f8fb](https://github.com/diva-e/create-frontend-component/commit/fe2f8fb5afd96740d00a3562aced3a0e9a2c16da))
+* fix issues with kebabCase names when using upgrade command ([844ca8d](https://github.com/diva-e/create-frontend-component/commit/844ca8dc0e3a9d53ba697ec3027616fcda126558)), closes [#22](https://github.com/diva-e/create-frontend-component/issues/22)
+
 ### [1.4.1](https://github.com/diva-e/create-frontend-component/compare/v1.4.0...v1.4.1) (2023-02-21)
 
 
