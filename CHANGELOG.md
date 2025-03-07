@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/diva-e/create-frontend-component/compare/v2.0.0...v2.1.0) (2025-03-07)
+
+
+### Features
+
+* add init command where preset can directly be passed ([5da7734](https://github.com/diva-e/create-frontend-component/commit/5da773473b06312e1864903ff49df41e421523f4))
+* improve error handling for missing configuration file ([28d08d4](https://github.com/diva-e/create-frontend-component/commit/28d08d412a87b8dfc8823d2561710be2f9070df7))
+
 ## [2.0.0](https://github.com/diva-e/create-frontend-component/compare/v1.4.1...v2.0.0) (2025-02-27)
 
 
