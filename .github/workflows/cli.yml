@@ -1,0 +1,56 @@
+name: CLI test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install --save-dev create-frontend-component
+
+      - name: Run CLI to init config
+        run: npx create-frontend-component init:vue3
+
+      - name: Run CLI to generate a component
+        run: npx create-frontend-component test-component --type molecules --flavour default
+
+      - name: Verify Generated Files (Linux/macOS)
+        if: matrix.os != 'windows-latest'
+        run: |
+          test -d src/components/molecules/TestComponent && echo "Component directory exists"
+          test -f src/components/molecules/TestComponent/TestComponent.vue && echo "Vue file exists"
+          test -f src/components/molecules/TestComponent/TestComponent.stories.mdx && echo "MDX file exists"
+
+      - name: Verify Generated Files (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          if (!(Test-Path "src/components/molecules/TestComponent" -PathType Container)) { exit 1 }
+          if (!(Test-Path "src/components/molecules/TestComponent/TestComponent.vue")) { exit 1 }
+          if (!(Test-Path "src/components/molecules/TestComponent/TestComponent.stories.mdx")) { exit 1 }
+
+      - name: Cleanup (Linux/macOS)
+        if: matrix.os != 'windows-latest'
+        run: rm -rf src/components/molecules/TestComponent
+
+      - name: Cleanup (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: Remove-Item -Recurse -Force src/components/molecules/TestComponent
