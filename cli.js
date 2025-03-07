@@ -57,6 +57,13 @@ program
       return
     }
 
+    if (componentName.toLowerCase().startsWith('init:')) {
+      const nameParts = componentName.toLowerCase().split(':')
+      const presetArgument = nameParts[1]
+      await processInitCommand(PRESET_PATH, CONFIG_DIRECTORY, CONFIG_FILE_NAME, configDefaults, presetArgument)
+      return
+    }
+
     const { types, templatePath, componentPath, nameStyle } = loadConfig()
     const allowedComponentTypes = types || []
     const fullTemplatePath = path.join(process.cwd(), templatePath)
