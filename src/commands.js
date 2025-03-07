@@ -98,11 +98,17 @@ export function processCreateComponentCommand(env, allowedComponentTypes, fullTe
  * @param {string} configDirectory
  * @param {string} configFileName
  * @param {string} configDefaults
+ * @param {string} [presetArgument]
  * @return {Promise<void>}
  */
-export async function processInitCommand(presetPath, configDirectory, configFileName, configDefaults) {
+export async function processInitCommand(presetPath, configDirectory, configFileName, configDefaults, presetArgument) {
   const availablePresets = getDirectories(presetPath)
-  const presetName = await promptSingleSelect('Choose a preset', availablePresets)
+  let presetName
+  if (presetArgument) {
+    presetName = presetArgument
+  } else {
+    presetName = await promptSingleSelect('Choose a preset', availablePresets)
+  }
   return initProjectInWorkingDirectory(path.join(presetPath, presetName), configDirectory, configFileName, configDefaults)
 }
 

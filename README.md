@@ -22,6 +22,12 @@ You will be prompted to choose a preset which will be copied to your templates d
 
 A config file and `.create-frontend-component` directory will be created aswell.
 
+It is also possible to avoid the prompting and directly initialize a certain preset:
+
+```bash
+npx create-frontend-component init:vue3
+```
+
 ### Configuration
 
 The `init` command creates the `.create-frontend-component/config.json` configuration file.
