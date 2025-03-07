@@ -57,7 +57,7 @@ function loadConfig() {
 }
 
 program
-  .version('2.0.0')
+  .version('2.1.0')
   .command('create-frontend-component [component-name]') // Define the command
   .option( '-t, --type <type>', 'Component type, default: atoms')
   .option( '-f, --flavour <flavour>', 'Component flavour')
