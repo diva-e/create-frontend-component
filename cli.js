@@ -9,7 +9,7 @@ import {
   processUpgradeCommand,
 } from './src/commands.js'
 import { getDirectories } from './src/utilities.js'
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -34,13 +34,25 @@ const configDefaults = {
  */
 function loadConfig() {
   const filePath = path.resolve(process.cwd(), '.create-frontend-component', 'config.json')
-  const configFromFile = JSON.parse(
-    readFileSync(filePath, 'utf8').replace(/^\ufeff/u, '')
-  )
 
-  return {
-    ...configDefaults,
-    ...configFromFile
+  try {
+    if (!existsSync(filePath)) {
+      console.error(`Error: Configuration file not found at ${filePath}.`)
+      console.error('Run "npx create-frontend-component init" to generate the configuration file.')
+      process.exit(1)
+    }
+
+    const fileContent = readFileSync(filePath, 'utf8').replace(/^\ufeff/u, '')
+    const configFromFile = JSON.parse(fileContent)
+
+    return {
+      ...configDefaults,
+      ...configFromFile
+    }
+  } catch (error) {
+    console.error(`Error loading configuration file: ${error.message}`)
+    console.error('Try running "npx create-frontend-component init" to reset the configuration.')
+    process.exit(1)
   }
 }
 
