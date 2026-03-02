@@ -3,8 +3,17 @@
   "version": "2.1.0",
   "type": "module",
   "description": "Framework-agnostic utility to scaffold frontend components by using custom templates",
+  "main": "cli.js",
+  "bin": {
+    "create-frontend-component": "cli.js"
+  },
+  "files": [
+    "cli.js",
+    "src",
+    "presets"
+  ],
   "scripts": {
-    "test": "echo \"No test implemented yet\"",
+    "test": "node --test src/*.spec.js",
     "lint": "eslint cli.js src/**/*.js",
     "lint:fix": "eslint --fix cli.js src/**/*.js",
     "release": "standard-version",
@@ -12,9 +21,6 @@
     "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major",
     "prepare": "husky install"
-  },
-  "bin": {
-    "create-frontend-component": "cli.js"
   },
   "keywords": [
     "component generator",
@@ -74,10 +80,7 @@
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
     "fs-extra": "^11.3.0",
-    "gulp": "^5.0.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-replace": "^1.1.4",
-    "gulp-template": "^6.0.0",
+    "glob": "^11.0.0",
     "prompts": "^2.4.2",
     "yargs": "^17.7.2"
   },
