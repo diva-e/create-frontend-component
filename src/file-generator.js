@@ -46,13 +46,15 @@ export function copyTemplateFiles(options) {
 
   createDirectoryIfNotExists(destinationPath)
 
-  const basePath = sourcePattern.replace('/**/*.*', '').replace('/**/*', '')
-  const files = globSync(sourcePattern)
+  const normalizedPattern = sourcePattern.split(path.sep).join('/')
+  const basePath = normalizedPattern.replace('/**/*.*', '').replace('/**/*', '')
+  const files = globSync(normalizedPattern)
 
   files.forEach((filePath) => {
-    const relativePath = path.relative(basePath, filePath)
+    const normalizedFilePath = filePath.split(path.sep).join('/')
+    const relativePath = path.relative(basePath, normalizedFilePath)
     const dir = path.dirname(relativePath)
-    const basename = path.basename(filePath)
+    const basename = path.basename(normalizedFilePath)
 
     const newBasename = fileRenameFn ? fileRenameFn(basename) : basename
     const finalDir = dir === '.' ? destinationPath : path.join(destinationPath, dir)
@@ -228,8 +230,8 @@ export function generateComponentFiles(options) {
     effectiveFlavour,
     'ComponentTemplate',
     '**',
-    '*.*',
-  )
+    '*.*'
+  ).split(path.sep).join('/')
 
   const endMessage = `Component '${destinationPath}' was created.`
 
@@ -303,7 +305,7 @@ export function generateFilesIfNotExistAlready(options) {
       'ComponentTemplate',
       '**',
       newFile,
-    )
+    ).split(path.sep).join('/')
 
     const endMessage = `New file '${newFile.replace('ComponentTemplate', replacedNameInPath)}' created`
     generateFiles({
