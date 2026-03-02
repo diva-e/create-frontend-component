@@ -8,3 +8,4 @@ playground
 .editorconfig
 .eslintignore
 .github
+*.spec.js
