@@ -1,7 +1,7 @@
 import path from 'path'
 
 import { getDirectories, validateKebabCaseName } from './utilities.js'
-import { generateComponentFiles, generateFilesIfNotExistAlready, initProjectInWorkingDirectory } from './gulpfile.js'
+import { generateComponentFilesWithDeps, generateFilesIfNotExistAlreadyWithDeps, initProjectInWorkingDirectory } from './file-operations.js'
 import { promptSingleSelect, promptText } from './prompt-utilities.js'
 
 
@@ -38,7 +38,7 @@ export async function processPromptCommand(allowedComponentTypes, availableFlavo
     componentType = null
   }
   const flavour = await promptFlavour(availableFlavours)
-  generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours, nameStyle)
+  generateComponentFilesWithDeps(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours, nameStyle)
 }
 
 /**
@@ -58,7 +58,7 @@ export async function processUpgradeCommand(availableFlavours, allowedComponentT
   const componentName = await promptText('Component Name (kebab-case)', validateKebabCaseName)
   const componentType = await promptSingleSelect('Choose the type', allowedComponentTypes)
   const flavour = await promptFlavour(availableFlavours, 'Choose a flavour to upgrade')
-  generateFilesIfNotExistAlready(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours, nameStyle)
+  generateFilesIfNotExistAlreadyWithDeps(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours, nameStyle)
 }
 
 /**
@@ -90,7 +90,7 @@ export function processCreateComponentCommand(env, allowedComponentTypes, fullTe
     throw new Error('component type not found')
   }
 
-  generateComponentFiles(fullTemplatePath, componentPath, componentName, componentType, env.flavour, availableFlavours, nameStyle)
+  generateComponentFilesWithDeps(fullTemplatePath, componentPath, componentName, componentType, env.flavour, availableFlavours, nameStyle)
 }
 
 /**

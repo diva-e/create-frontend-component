@@ -51,7 +51,7 @@ Edit `.create-frontend-component/config.json`:
 
 ## Project Structure
 
-```
+```bash
 src/
 ├── commands.js         # Command handlers (init, prompt, create, upgrade)
 ├── gulpfile.js         # File generation using Gulp
