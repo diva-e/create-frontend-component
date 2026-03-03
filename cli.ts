@@ -7,6 +7,7 @@ import {
   processInitCommand,
   processPromptCommand,
   processUpgradeCommand,
+  type CommandEnv,
 } from './src/commands.js'
 import { getDirectories } from './src/utilities.js'
 import { readFileSync, existsSync } from 'fs'
@@ -62,17 +63,12 @@ function loadConfig(): AppConfig {
   }
 }
 
-interface CommandOptions {
-  type?: string
-  flavour?: string
-}
-
 program
   .version('2.1.0')
   .command('create-frontend-component [component-name]')
   .option('-t, --type <type>', 'Component type, default: atoms')
   .option('-f, --flavour <flavour>', 'Component flavour')
-  .action(async function(componentNameArg: string | undefined, env: CommandOptions) {
+  .action(async function(componentNameArg: string | undefined, env: CommandEnv) {
     const componentName = componentNameArg || ''
 
     if (componentName.toLowerCase() === 'init') {

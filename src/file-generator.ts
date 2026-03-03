@@ -5,6 +5,8 @@ import { globSync } from 'glob'
 
 const { copySync } = fsExtra
 
+const MAGIC_COMPONENT_NAME = 'ComponentTemplate'
+
 export function createDirectoryIfNotExists(dirPath: string): void {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true })
@@ -84,20 +86,20 @@ export function initProjectInWorkingDirectory(
 ): void {
   const configPath = path.join(process.cwd(), configDirectory)
   if (!fs.existsSync(configPath)) {
-    console.log('\nCreate directory ' + configDirectory)
+    console.log(`\nCreate directory ${configDirectory}`)
     fs.mkdirSync(configPath)
   }
 
   const configJSON = JSON.stringify(configDefaults)
   const configFilePath = path.join(configDirectory, configFileName)
   if (!fs.existsSync(configFilePath)) {
-    console.log('Create config file ' + configFilePath)
+    console.log(`Create config file ${configFilePath}`)
     fs.writeFileSync(configFilePath, configJSON, { encoding: 'utf-8' })
   }
 
   const defaultTemplatePath = path.join(configDirectory, 'templates')
   if (!fs.existsSync(defaultTemplatePath)) {
-    console.log('Create templates directory ' + defaultTemplatePath)
+    console.log(`Create templates directory ${defaultTemplatePath}`)
     fs.mkdirSync(defaultTemplatePath)
   }
   try {
@@ -176,7 +178,7 @@ export function generateFiles(options: GenerateFilesOptions): void {
   }
 
   const fileRenameFn = (basename: string): string => {
-    return basename.replace('ComponentTemplate', resultingName)
+    return basename.replace(MAGIC_COMPONENT_NAME, resultingName)
   }
 
   copyTemplateFiles({
@@ -246,7 +248,7 @@ export function generateComponentFiles(options: GenerateComponentFilesOptions): 
   const resolvedTemplatePath = path.join(
     fullTemplatePath,
     effectiveFlavour,
-    'ComponentTemplate',
+    MAGIC_COMPONENT_NAME,
     '**',
     '*.*'
   ).split(path.sep).join('/')
@@ -318,11 +320,11 @@ export function generateFilesIfNotExistAlready(options: GenerateFilesIfNotExistA
   }
 
   const existingFiles = getFiles(destinationPathResolved)
-  const templateFilesDir = path.join(fullTemplatePath, effectiveFlavour, 'ComponentTemplate')
+  const templateFilesDir = path.join(fullTemplatePath, effectiveFlavour, MAGIC_COMPONENT_NAME)
   const templateFiles = getFiles(templateFilesDir)
 
   const filesToAdd = templateFiles.filter((fileName: string) => {
-    const tmpName = fileName.replace('ComponentTemplate', replacedNameInPath)
+    const tmpName = fileName.replace(MAGIC_COMPONENT_NAME, replacedNameInPath)
     return !existingFiles.includes(tmpName)
   })
 
@@ -330,12 +332,12 @@ export function generateFilesIfNotExistAlready(options: GenerateFilesIfNotExistA
     const resolvedTemplatePath = path.join(
       fullTemplatePath,
       effectiveFlavour,
-      'ComponentTemplate',
+      MAGIC_COMPONENT_NAME,
       '**',
       newFile,
     ).split(path.sep).join('/')
 
-    const endMessage = `New file '${newFile.replace('ComponentTemplate', replacedNameInPath)}' created`
+    const endMessage = `New file '${newFile.replace(MAGIC_COMPONENT_NAME, replacedNameInPath)}' created`
     generateFiles({
       resolvedTemplatePath,
       name,

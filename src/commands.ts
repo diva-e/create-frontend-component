@@ -98,5 +98,5 @@ export async function processInitCommand(
   } else {
     presetName = await promptSingleSelect('Choose a preset', availablePresets)
   }
-  return initProjectInWorkingDirectory(presetPath + '/' + presetName, configDirectory, configFileName, configDefaults)
+  return initProjectInWorkingDirectory(`${presetPath}/${presetName}`, configDirectory, configFileName, configDefaults)
 }
