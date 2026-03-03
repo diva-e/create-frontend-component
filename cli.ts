@@ -63,8 +63,15 @@ function loadConfig(): AppConfig {
   }
 }
 
+const packageJsonPath = path.join(__dirname, '..', 'package.json')
+const { version } = JSON.parse(readFileSync(packageJsonPath, { encoding: 'utf-8' }))
+
 program
-  .version('2.1.0')
+  .name('create-frontend-component')
+  .description('Frontend Component Generator')
+  .version(version)
+
+program
   .command('create-frontend-component [component-name]')
   .option('-t, --type <type>', 'Component type, default: atoms')
   .option('-f, --flavour <flavour>', 'Component flavour')
@@ -102,4 +109,5 @@ program
       processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours, nameStyle)
     }
   })
-  .parse(process.argv)
+
+program.parse(process.argv)
