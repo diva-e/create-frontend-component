@@ -16,24 +16,27 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+export interface AppConfig {
+  types: string[] | null
+  templatePath: string
+  componentPath: string
+  nameStyle: string
+}
 
 const CONFIG_DIRECTORY = '.create-frontend-component'
 const CONFIG_FILE_NAME = 'config.json'
 const PRESET_DIR = 'presets'
 const PRESET_PATH = path.join(__dirname, PRESET_DIR)
 
-const configDefaults = {
+const configDefaults: AppConfig = {
   types: ['atoms', 'molecules', 'organisms'],
   templatePath: CONFIG_DIRECTORY + '/templates',
   componentPath: 'src/components',
   nameStyle: 'pascalCase'
 }
 
-/**
- * @return {object}
- */
-function loadConfig() {
-  const filePath = path.resolve(process.cwd(), '.create-frontend-component', 'config.json')
+function loadConfig(): AppConfig {
+  const filePath = path.resolve(process.cwd(), CONFIG_DIRECTORY, CONFIG_FILE_NAME)
 
   try {
     if (!existsSync(filePath)) {
@@ -46,22 +49,30 @@ function loadConfig() {
     const configFromFile = JSON.parse(fileContent)
 
     return {
-      ...configDefaults,
+      types: configDefaults.types ?? null,
+      templatePath: configDefaults.templatePath,
+      componentPath: configDefaults.componentPath,
+      nameStyle: configDefaults.nameStyle,
       ...configFromFile
     }
   } catch (error) {
-    console.error(`Error loading configuration file: ${error.message}`)
+    console.error(`Error loading configuration file: ${(error as Error).message}`)
     console.error('Try running "npx create-frontend-component init" to reset the configuration.')
     process.exit(1)
   }
 }
 
+interface CommandEnv {
+  type?: string
+  flavour?: string
+}
+
 program
   .version('2.1.0')
-  .command('create-frontend-component [component-name]') // Define the command
-  .option( '-t, --type <type>', 'Component type, default: atoms')
-  .option( '-f, --flavour <flavour>', 'Component flavour')
-  .action( async function(componentNameArg, env) {
+  .command('create-frontend-component [component-name]')
+  .option('-t, --type <type>', 'Component type, default: atoms')
+  .option('-f, --flavour <flavour>', 'Component flavour')
+  .action(async function(componentNameArg: string | undefined, env: CommandEnv) {
     const componentName = componentNameArg || ''
 
     if (componentName.toLowerCase() === 'init') {

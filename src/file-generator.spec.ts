@@ -48,7 +48,7 @@ describe('processTemplate', () => {
 })
 
 describe('createDirectoryIfNotExists', () => {
-  let tempDir
+  let tempDir: string
 
   beforeEach(() => {
     tempDir = path.join(os.tmpdir(), `test-${Date.now()}`)
@@ -73,9 +73,9 @@ describe('createDirectoryIfNotExists', () => {
 })
 
 describe('copyTemplateFiles', () => {
-  let tempDir
-  let sourceDir
-  let destDir
+  let tempDir: string
+  let sourceDir: string
+  let destDir: string
 
   beforeEach(() => {
     tempDir = path.join(os.tmpdir(), `test-${Date.now()}`)
@@ -160,7 +160,7 @@ describe('copyTemplateFiles', () => {
 })
 
 describe('getFilesRecursively', () => {
-  let tempDir
+  let tempDir: string
 
   beforeEach(() => {
     tempDir = path.join(os.tmpdir(), `test-${Date.now()}`)
@@ -197,9 +197,9 @@ describe('getFilesRecursively', () => {
 })
 
 describe('Integration: Full component generation flow', () => {
-  let tempDir
-  let templateDir
-  let outputDir
+  let tempDir: string
+  let templateDir: string
+  let outputDir: string
 
   beforeEach(() => {
     tempDir = path.join(os.tmpdir(), `test-integration-${Date.now()}`)

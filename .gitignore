@@ -6,3 +6,5 @@ playground/src
 
 *.iml
 *.iws
+
+dist/

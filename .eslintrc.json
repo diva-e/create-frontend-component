@@ -3,11 +3,16 @@
         "es6": true,
         "node": true
     },
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
       "ecmaVersion": 2020,
       "sourceType": "module"
     },
-  "extends": "eslint:recommended",
+    "plugins": ["@typescript-eslint"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
     "rules": {
         "prefer-const": "error",
         "object-curly-spacing": ["warn", "always"],
@@ -25,19 +30,8 @@
         ],
         "semi": ["warn", "never"],
         "comma-dangle": ["error", "only-multiline"],
-        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-        "valid-jsdoc": [2, {
-          "requireParamDescription": false,
-          "requireReturnDescription": false,
-          "requireReturn": false,
-          "prefer": {"returns": "return"}
-        }],
-        "require-jsdoc": [2, {
-          "require": {
-            "FunctionDeclaration": true,
-            "MethodDefinition": true,
-            "ClassDeclaration": true
-          }
-        }]
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "no-explicit-any": "off"
     }
 }

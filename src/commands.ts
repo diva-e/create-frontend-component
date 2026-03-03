@@ -1,16 +1,8 @@
-import path from 'path'
-
 import { getDirectories, validateKebabCaseName } from './utilities.js'
 import { generateComponentFilesWithDeps, generateFilesIfNotExistAlreadyWithDeps, initProjectInWorkingDirectory } from './file-operations.js'
 import { promptSingleSelect, promptText } from './prompt-utilities.js'
 
-
-/**
- * @param {Array<string>} availableFlavours
- * @param {string} label
- * @return {Promise<string>}
- */
-async function promptFlavour(availableFlavours, label = 'Choose a flavour') {
+export async function promptFlavour(availableFlavours: string[], label: string = 'Choose a flavour'): Promise<string> {
   if (availableFlavours.length === 0) {
     console.warn('Could not detect any component flavour, falling back to "default"')
     return Promise.resolve('default')
@@ -21,17 +13,15 @@ async function promptFlavour(availableFlavours, label = 'Choose a flavour') {
   return promptSingleSelect(label, availableFlavours)
 }
 
-/**
- * @param {Array<string>} allowedComponentTypes
- * @param {Array<string>} availableFlavours
- * @param {string} fullTemplatePath
- * @param {string} componentPath
- * @param {string} nameStyle eg. pascalCase, kebabCase
- * @return {Promise<void>}
- */
-export async function processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle) {
+export async function processPromptCommand(
+  allowedComponentTypes: string[] | null,
+  availableFlavours: string[],
+  fullTemplatePath: string,
+  componentPath: string,
+  nameStyle: string
+): Promise<void> {
   const componentName = await promptText('Component Name (kebab-case)', validateKebabCaseName)
-  let componentType
+  let componentType: string | null
   if (allowedComponentTypes && allowedComponentTypes.length > 0) {
     componentType = await promptSingleSelect('Choose a type', allowedComponentTypes)
   } else {
@@ -41,15 +31,13 @@ export async function processPromptCommand(allowedComponentTypes, availableFlavo
   generateComponentFilesWithDeps(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours, nameStyle)
 }
 
-/**
- * @param {Array<string>} availableFlavours
- * @param {Array<string>} allowedComponentTypes
- * @param {string} fullTemplatePath
- * @param {string} componentPath
- * @param {string} nameStyle
- * @return {Promise<void>}
- */
-export async function processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath, nameStyle) {
+export async function processUpgradeCommand(
+  availableFlavours: string[],
+  allowedComponentTypes: string[],
+  fullTemplatePath: string,
+  componentPath: string,
+  nameStyle: string
+): Promise<void> {
   if (availableFlavours.length <= 1) {
     console.error('Could not detect more than 1 flavour, upgrade is not possible')
     return
@@ -61,28 +49,31 @@ export async function processUpgradeCommand(availableFlavours, allowedComponentT
   generateFilesIfNotExistAlreadyWithDeps(fullTemplatePath, componentPath, componentName, componentType, flavour, availableFlavours, nameStyle)
 }
 
-/**
- * @param {object} env
- * @param {Array<string>} allowedComponentTypes
- * @param {string} fullTemplatePath
- * @param {string} componentPath
- * @param {string} componentName
- * @param {Array<string>} availableFlavours
- * @param {string} nameStyle eg. 'pascalCase', 'kebabCase'
- */
-export function processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours, nameStyle) {
+export interface CommandEnv {
+  type?: string
+  flavour?: string
+}
+
+export function processCreateComponentCommand(
+  env: CommandEnv,
+  allowedComponentTypes: string[],
+  fullTemplatePath: string,
+  componentPath: string,
+  componentName: string,
+  availableFlavours: string[],
+  nameStyle: string
+): void {
   if (env.type && allowedComponentTypes.length === 0) {
     throw new Error('component types are not configured in this project but found parameter "type"')
   }
 
-  let componentType = env.type
+  let componentType: string | null
   if (allowedComponentTypes.length === 0) {
     componentType = null
-  } else if (!componentType) {
-    // use first type as default
+  } else if (!env.type) {
     componentType = allowedComponentTypes[0]
   } else {
-    componentType = componentType.toLowerCase()
+    componentType = env.type.toLowerCase()
   }
 
   if (componentType && !allowedComponentTypes.includes(componentType)) {
@@ -90,25 +81,22 @@ export function processCreateComponentCommand(env, allowedComponentTypes, fullTe
     throw new Error('component type not found')
   }
 
-  generateComponentFilesWithDeps(fullTemplatePath, componentPath, componentName, componentType, env.flavour, availableFlavours, nameStyle)
+  generateComponentFilesWithDeps(fullTemplatePath, componentPath, componentName, componentType, env.flavour ?? 'default', availableFlavours, nameStyle)
 }
 
-/**
- * @param {string} presetPath
- * @param {string} configDirectory
- * @param {string} configFileName
- * @param {string} configDefaults
- * @param {string} [presetArgument]
- * @return {Promise<void>}
- */
-export async function processInitCommand(presetPath, configDirectory, configFileName, configDefaults, presetArgument) {
+export async function processInitCommand(
+  presetPath: string,
+  configDirectory: string,
+  configFileName: string,
+  configDefaults: { types: string[] | null; templatePath: string; componentPath: string; nameStyle: string },
+  presetArgument?: string
+): Promise<void> {
   const availablePresets = getDirectories(presetPath)
-  let presetName
+  let presetName: string
   if (presetArgument) {
     presetName = presetArgument
   } else {
     presetName = await promptSingleSelect('Choose a preset', availablePresets)
   }
-  return initProjectInWorkingDirectory(path.join(presetPath, presetName), configDirectory, configFileName, configDefaults)
+  return initProjectInWorkingDirectory(presetPath + '/' + presetName, configDirectory, configFileName, configDefaults)
 }
-

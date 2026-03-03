@@ -1,11 +1,8 @@
 import prompts from 'prompts'
 
-/**
- * @param {string} message
- * @param {function} validator
- * @return {Promise<string>}
- */
-export async function promptText(message, validator) {
+export type Validator = (value: string) => string | true
+
+export async function promptText(message: string, validator?: Validator): Promise<string> {
   const response = await prompts({
     type: 'text',
     name: 'value',
@@ -20,17 +17,12 @@ export async function promptText(message, validator) {
   return response.value
 }
 
-/**
- * @param {string} message
- * @param {Array<string>} choices
- * @return {Promise<string>}
- */
-export async function promptSingleSelect(message, choices) {
+export async function promptSingleSelect(message: string, choices: string[]): Promise<string> {
   const response = await prompts({
     type: 'select',
     name: 'value',
     message: message,
-    choices: choices.map(choice => ({ choice, value: choice }))
+    choices: choices.map((choice: string) => ({ title: choice, value: choice }))
   })
 
   if (response.value === undefined) {
