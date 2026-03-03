@@ -18,7 +18,7 @@
 
 - Make sure to run `npm test` and `npm run lint:fix` after changes have been finished
 - Keep the project lightweight and avoid adding more dependencies
-- Make sure to update `src/serve-mocks.spec.js` with tests for new features, it is basically a kind of e2e test which covers most of logic
+- Make sure to update existing unit tests or create new ones for new features
 
 ## Scripts
 
