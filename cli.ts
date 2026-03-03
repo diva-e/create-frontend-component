@@ -16,7 +16,7 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-export interface AppConfig {
+interface AppConfig {
   types: string[] | null
   templatePath: string
   componentPath: string
@@ -30,7 +30,7 @@ const PRESET_PATH = path.join(__dirname, PRESET_DIR)
 
 const configDefaults: AppConfig = {
   types: ['atoms', 'molecules', 'organisms'],
-  templatePath: CONFIG_DIRECTORY + '/templates',
+  templatePath: `${CONFIG_DIRECTORY}/templates`,
   componentPath: 'src/components',
   nameStyle: 'pascalCase'
 }
@@ -62,7 +62,7 @@ function loadConfig(): AppConfig {
   }
 }
 
-interface CommandEnv {
+interface CommandOptions {
   type?: string
   flavour?: string
 }
@@ -72,7 +72,7 @@ program
   .command('create-frontend-component [component-name]')
   .option('-t, --type <type>', 'Component type, default: atoms')
   .option('-f, --flavour <flavour>', 'Component flavour')
-  .action(async function(componentNameArg: string | undefined, env: CommandEnv) {
+  .action(async function(componentNameArg: string | undefined, env: CommandOptions) {
     const componentName = componentNameArg || ''
 
     if (componentName.toLowerCase() === 'init') {
@@ -91,6 +91,12 @@ program
     const allowedComponentTypes = types || []
     const fullTemplatePath = path.join(process.cwd(), templatePath)
     const availableFlavours = getDirectories(fullTemplatePath)
+
+    if (availableFlavours.length === 0) {
+      console.error('Error: No flavours found in template directory.')
+      console.error(`Please ensure templates exist in ${fullTemplatePath}`)
+      process.exit(1)
+    }
 
     if (componentName.toLowerCase() === 'prompt' || !componentName.trim()) {
       await processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle)
