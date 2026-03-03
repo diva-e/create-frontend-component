@@ -1,6 +1,7 @@
 import { getDirectories, validateKebabCaseName } from './utilities.js'
 import { generateComponentFilesWithDeps, generateFilesIfNotExistAlreadyWithDeps, initProjectInWorkingDirectory } from './file-operations.js'
 import { promptSingleSelect, promptText } from './prompt-utilities.js'
+import path from 'path'
 
 export async function promptFlavour(availableFlavours: string[], label: string = 'Choose a flavour'): Promise<string> {
   if (availableFlavours.length === 0) {
@@ -98,5 +99,5 @@ export async function processInitCommand(
   } else {
     presetName = await promptSingleSelect('Choose a preset', availablePresets)
   }
-  return initProjectInWorkingDirectory(`${presetPath}/${presetName}`, configDirectory, configFileName, configDefaults)
+  return initProjectInWorkingDirectory(path.join(presetPath, presetName), configDirectory, configFileName, configDefaults)
 }
