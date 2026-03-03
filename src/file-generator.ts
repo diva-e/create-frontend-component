@@ -129,6 +129,10 @@ export function getFilesRecursively(dirPath: string): string[] {
 export type NameStyle = 'pascalCase' | 'kebabCase'
 export type TransformFn = (val: string) => string
 
+function getResultingName(name: string, nameStyle: NameStyle, toUpperCamelCase: TransformFn): string {
+  return nameStyle === 'kebabCase' ? name : toUpperCamelCase(name)
+}
+
 export interface GenerateFilesOptions {
   resolvedTemplatePath: string
   name: string
@@ -157,16 +161,7 @@ export function generateFiles(options: GenerateFilesOptions): void {
   } = options
 
   const upperCamelCaseName = toUpperCamelCase(name)
-  let resultingName: string
-
-  switch(nameStyle) {
-  case 'kebabCase':
-    resultingName = name
-    break
-  default:
-    resultingName = upperCamelCaseName
-    break
-  }
+  const resultingName = getResultingName(name, nameStyle, toUpperCamelCase)
 
   const templateData: Record<string, string> = {
     name: name,
@@ -231,17 +226,7 @@ export function generateComponentFiles(options: GenerateComponentFilesOptions): 
     throw new Error('flavour not found')
   }
 
-  const upperCamelCaseName = toUpperCamelCase(name)
-
-  let replacedNameInPath: string
-  switch(nameStyle) {
-  case 'kebabCase':
-    replacedNameInPath = name
-    break
-  default:
-    replacedNameInPath = upperCamelCaseName
-    break
-  }
+  const replacedNameInPath = getResultingName(name, nameStyle ?? 'pascalCase', toUpperCamelCase)
 
   const relativeDestinationPath = componentType ? path.join(componentType, replacedNameInPath) : replacedNameInPath
   const destinationPathResolved = path.join(componentPath, relativeDestinationPath)
@@ -296,17 +281,7 @@ export function generateFilesIfNotExistAlready(options: GenerateFilesIfNotExistA
     toUpperCamelCase,
   } = options
 
-  const upperCamelCaseName = toUpperCamelCase(name)
-
-  let replacedNameInPath: string
-  switch(nameStyle) {
-  case 'kebabCase':
-    replacedNameInPath = name
-    break
-  default:
-    replacedNameInPath = upperCamelCaseName
-    break
-  }
+  const replacedNameInPath = getResultingName(name, nameStyle ?? 'pascalCase', toUpperCamelCase)
 
   const relativeDestinationPath = componentType ? path.join(componentType, replacedNameInPath) : replacedNameInPath
   const destinationPathResolved = path.join(componentPath, relativeDestinationPath)
