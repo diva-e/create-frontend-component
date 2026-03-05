@@ -72,22 +72,62 @@ program
   .version(version)
 
 program
-  .command('create-frontend-component [component-name]')
+  .command('init [preset]')
+  .description('Initialize project with preset (e.g., init:vue3)')
+  .action(async (presetArg?: string) => {
+    let presetName: string | undefined
+    if (presetArg?.includes(':')) {
+      presetName = presetArg.split(':')[1]
+    }
+    await processInitCommand(PRESET_PATH, CONFIG_DIRECTORY, CONFIG_FILE_NAME, configDefaults, presetName)
+  })
+
+program
+  .command('prompt')
+  .description('Interactive component creation')
+  .action(async () => {
+    const { types, templatePath, componentPath, nameStyle } = loadConfig()
+    const allowedComponentTypes = types || []
+    const fullTemplatePath = path.join(process.cwd(), templatePath)
+    const availableFlavours = getDirectories(fullTemplatePath)
+
+    if (availableFlavours.length === 0) {
+      console.error('Error: No flavours found in template directory.')
+      console.error(`Please ensure templates exist in ${fullTemplatePath}`)
+      process.exit(1)
+    }
+
+    await processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle)
+  })
+
+program
+  .command('upgrade')
+  .description('Add missing files from a different flavour')
+  .action(async () => {
+    const { types, templatePath, componentPath, nameStyle } = loadConfig()
+    const allowedComponentTypes = types || []
+    const fullTemplatePath = path.join(process.cwd(), templatePath)
+    const availableFlavours = getDirectories(fullTemplatePath)
+
+    if (availableFlavours.length <= 1) {
+      console.error('Could not detect more than 1 flavour, upgrade is not possible')
+      process.exit(1)
+    }
+
+    await processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath, nameStyle)
+  })
+
+program
+  .argument('[component-name]', 'Component name')
   .option('-t, --type <type>', 'Component type, default: atoms')
   .option('-f, --flavour <flavour>', 'Component flavour')
   .action(async function(componentNameArg: string | undefined, env: CommandEnv) {
     const componentName = componentNameArg || ''
 
-    if (componentName.toLowerCase() === 'init') {
-      await processInitCommand(PRESET_PATH, CONFIG_DIRECTORY, CONFIG_FILE_NAME, configDefaults)
-      return
-    }
-
-    if (componentName.toLowerCase().startsWith('init:')) {
-      const nameParts = componentName.toLowerCase().split(':')
-      const presetArgument = nameParts[1]
-      await processInitCommand(PRESET_PATH, CONFIG_DIRECTORY, CONFIG_FILE_NAME, configDefaults, presetArgument)
-      return
+    if (!componentName.trim()) {
+      console.error('Error: Component name is required.')
+      console.error('Use "npx create-frontend-component prompt" for interactive creation.')
+      process.exit(1)
     }
 
     const { types, templatePath, componentPath, nameStyle } = loadConfig()
@@ -101,13 +141,7 @@ program
       process.exit(1)
     }
 
-    if (componentName.toLowerCase() === 'prompt' || !componentName.trim()) {
-      await processPromptCommand(allowedComponentTypes, availableFlavours, fullTemplatePath, componentPath, nameStyle)
-    } else if (componentName.toLowerCase() === 'upgrade') {
-      await processUpgradeCommand(availableFlavours, allowedComponentTypes, fullTemplatePath, componentPath, nameStyle)
-    } else {
-      processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours, nameStyle)
-    }
+    processCreateComponentCommand(env, allowedComponentTypes, fullTemplatePath, componentPath, componentName, availableFlavours, nameStyle)
   })
 
 program.parse(process.argv)
