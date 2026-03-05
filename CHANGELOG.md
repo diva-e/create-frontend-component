@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [3.0.0](https://github.com/diva-e/create-frontend-component/compare/v2.1.0...v3.0.0) (2026-03-05)
 
+Remove gulp dependencies, move source code to TypeScript and add unit tests for better stability.
 
 ### Bug Fixes
 
