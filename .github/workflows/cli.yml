@@ -25,7 +25,7 @@ jobs:
         run: npm install --save-dev create-frontend-component
 
       - name: Run CLI to init config
-        run: npx create-frontend-component init:vue3
+        run: npx create-frontend-component init vue3
 
       - name: Run CLI to generate a component
         run: npx create-frontend-component test-component --type molecules --flavour default

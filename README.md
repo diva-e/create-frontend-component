@@ -25,7 +25,7 @@ npx create-frontend-component init
 You can also initialize with a specific preset directly:
 
 ```bash
-npx create-frontend-component init:vue3
+npx create-frontend-component init vue3
 ```
 
 ### Configuration

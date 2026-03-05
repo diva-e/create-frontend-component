@@ -27,7 +27,7 @@ interface AppConfig {
 const CONFIG_DIRECTORY = '.create-frontend-component'
 const CONFIG_FILE_NAME = 'config.json'
 const PRESET_DIR = 'presets'
-const PRESET_PATH = path.join(__dirname, PRESET_DIR)
+const PRESET_PATH = path.join(__dirname, '..', PRESET_DIR)
 
 const configDefaults: AppConfig = {
   types: ['atoms', 'molecules', 'organisms'],
@@ -73,13 +73,9 @@ program
 
 program
   .command('init [preset]')
-  .description('Initialize project with preset (e.g., init:vue3)')
+  .description('Initialize project with preset')
   .action(async (presetArg?: string) => {
-    let presetName: string | undefined
-    if (presetArg?.includes(':')) {
-      presetName = presetArg.split(':')[1]
-    }
-    await processInitCommand(PRESET_PATH, CONFIG_DIRECTORY, CONFIG_FILE_NAME, configDefaults, presetName)
+    await processInitCommand(PRESET_PATH, CONFIG_DIRECTORY, CONFIG_FILE_NAME, configDefaults, presetArg)
   })
 
 program

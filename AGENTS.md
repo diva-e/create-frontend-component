@@ -9,7 +9,7 @@
 | Command | Description |
 |---------|-------------|
 | `npx create-frontend-component init` | Initialize project with preset and config |
-| `npx create-frontend-component init:<preset>` | Initialize with specific preset (e.g., `init:vue3`) |
+| `npx create-frontend-component init <preset>` | Initialize with specific preset (e.g., `init vue3`) |
 | `npx create-frontend-component prompt` | Interactive component creation |
 | `npx create-frontend-component <name> --type <type> --flavour <flavour>` | Direct component creation |
 | `npx create-frontend-component upgrade` | Add missing files from a different flavour |
