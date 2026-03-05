@@ -1,28 +1,28 @@
 
 # create-frontend-component
 
-> **Version 2.0** is out now! With updated dependencies, esmodules and a few improvements. Check the changelog for more info.
+> **Version 3.0** is out now! Check the changelog for more info.
 
 Framework-agnostic utility to scaffold frontend components by using custom templates.
 
-| [Contributing](/CONTRIBUTING.md) | [Changelog](/CHANGELOG.md) | [Powered by diva-e](https://www.diva-e.com)  |
-|----------------------------------| --- |----------------------------------------------|
+| [Contributing](/CONTRIBUTING.md) | [Changelog](/CHANGELOG.md) | [Powered by diva-e](https://www.diva-e.com) |
+|----------------------------------|----------------------------|---------------------------------------------|
 
 [![GitHub stars](https://img.shields.io/github/stars/diva-e/create-frontend-component.svg?style=social&label=Star)](https://github.com/diva-e/create-frontend-component)
 
 ## Getting Started
 
-### Initialization (Creates Directories and Configuration File)
+### Initialization
+
+Run the init command to set up the project with a preset:
 
 ```bash
 npx create-frontend-component init
 ```
 
-You will be prompted to choose a preset which will be copied to your templates directory.
+**Available presets:** `vue2`, `vue3`, `nuxt2-composition-api`, `angular-1x`, `react/class-style`, `react/function-style`
 
-A config file and `.create-frontend-component` directory will be created aswell.
-
-It is also possible to avoid the prompting and directly initialize a certain preset:
+You can also initialize with a specific preset directly:
 
 ```bash
 npx create-frontend-component init:vue3
@@ -70,6 +70,28 @@ This is what we call __component flavours__ (see _Usage_).
 We also have directories called `ComponentTemplate` they will be renamed to the component name you specifiy in the cli.
 This directory in turn may contain any desired files you need for component generation. This tool will copy those files, 
 rename them and replace all placeholders. In this example a `.mdx` file and a `.vue` file would be generated.
+
+#### Template Placeholders
+
+The following placeholders can be used in template files:
+
+| Placeholder                 | Description                | Example                    |
+|-----------------------------|----------------------------|----------------------------|
+| `<%= name %>`               | kebab-case component name  | `foo-bar-button`           |
+| `<%= componentType %>`      | Title-cased component type | `Molecules`                |
+| `<%= pascalCaseName %>`     | PascalCase component name  | `FooBarButton`             |
+| `<%= lowerCamelCaseName %>` | camelCase component name   | `fooBarButton`             |
+| `<%= destinationPath %>`    | Relative destination path  | `molecules/foo-bar-button` |
+
+Example usage in a Vue template:
+
+```vue
+<template>
+  <div class="<%= name %>">
+    <h1><%= pascalCaseName %></h1>
+  </div>
+</template>
+```
 
 ## Usage
 
