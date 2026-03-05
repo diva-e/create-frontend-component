@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/diva-e/create-frontend-component/compare/v3.0.0...v3.0.1) (2026-03-05)
+
+
+### Bug Fixes
+
+* fix duplicated command issue and restructure command handling ([c42c811](https://github.com/diva-e/create-frontend-component/commit/c42c811f4e2dab5d0d1d9176e3289a03bc38bf5c))
+* update CLI command syntax for initializing presets ([3c0ea2a](https://github.com/diva-e/create-frontend-component/commit/3c0ea2a03da766b247f672b5f832d45ecf6cfc9f))
+
 ## [3.0.0](https://github.com/diva-e/create-frontend-component/compare/v2.1.0...v3.0.0) (2026-03-05)
 
 Remove gulp dependencies, move source code to TypeScript and add unit tests for better stability.
