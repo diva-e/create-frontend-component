@@ -1,6 +1,6 @@
 {
   "name": "create-frontend-component",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "type": "module",
   "description": "Framework-agnostic utility to scaffold frontend components by using custom templates",
   "main": "dist/cli.js",

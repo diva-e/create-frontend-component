@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/diva-e/create-frontend-component/compare/v2.1.0...v3.0.0) (2026-03-05)
+
+
+### Bug Fixes
+
+* normalize file paths in copyTemplateFiles and related functions (windows issue) ([2933983](https://github.com/diva-e/create-frontend-component/commit/29339831f132ba2b8b271138be387cfa28043745))
+* update .npmignore and package.json to include necessary files for component generation ([59c1d1e](https://github.com/diva-e/create-frontend-component/commit/59c1d1e15c277764086fd9c3d675d367d3279c29))
+
 ## [2.1.0](https://github.com/diva-e/create-frontend-component/compare/v2.0.0...v2.1.0) (2025-03-07)
 
 
