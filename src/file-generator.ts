@@ -5,37 +5,34 @@ import { globSync } from 'glob'
 
 const { copySync } = fsExtra
 
-/**
- * @param {string} dirPath
- */
-export function createDirectoryIfNotExists(dirPath) {
+const MAGIC_COMPONENT_NAME = 'ComponentTemplate'
+
+export function createDirectoryIfNotExists(dirPath: string): void {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true })
   }
 }
 
-/**
- * @param {string} content
- * @param {object} data
- * @return {string}
- */
-export function processTemplate(content, data) {
+export function processTemplate(content: string, data: Record<string, string>): string {
   const templateRegex = /<%=([^=]+)%>/g
-  return content.replace(templateRegex, (match, variable) => {
+  return content.replace(templateRegex, (match: string, variable: string): string => {
     const varName = variable.trim()
     return data[varName] !== undefined ? data[varName] : match
   })
 }
 
-/**
- * @param {object} options
- * @param {string} options.sourcePattern
- * @param {string} options.destinationPath
- * @param {object} options.templateData
- * @param {function} options.fileRenameFn
- * @param {function} options.onComplete
- */
-export function copyTemplateFiles(options) {
+export type FileRenameFn = (basename: string) => string
+export type OnCompleteFn = () => void
+
+export interface CopyTemplateFilesOptions {
+  sourcePattern: string
+  destinationPath: string
+  templateData: Record<string, string>
+  fileRenameFn?: FileRenameFn
+  onComplete?: OnCompleteFn
+}
+
+export function copyTemplateFiles(options: CopyTemplateFilesOptions): void {
   const {
     sourcePattern,
     destinationPath,
@@ -50,7 +47,7 @@ export function copyTemplateFiles(options) {
   const basePath = normalizedPattern.replace('/**/*.*', '').replace('/**/*', '')
   const files = globSync(normalizedPattern)
 
-  files.forEach((filePath) => {
+  files.forEach((filePath: string) => {
     const normalizedFilePath = filePath.split(path.sep).join('/')
     const relativePath = path.relative(basePath, normalizedFilePath)
     const dir = path.dirname(relativePath)
@@ -74,29 +71,35 @@ export function copyTemplateFiles(options) {
   }
 }
 
-/**
- * @param {string} presetPath
- * @param {string} configDirectory
- * @param {string} configFileName
- * @param {object} configDefaults
- */
-export function initProjectInWorkingDirectory(presetPath, configDirectory, configFileName, configDefaults) {
+export interface ConfigDefaults {
+  types: string[] | null
+  templatePath: string
+  componentPath: string
+  nameStyle: string
+}
+
+export function initProjectInWorkingDirectory(
+  presetPath: string,
+  configDirectory: string,
+  configFileName: string,
+  configDefaults: ConfigDefaults
+): void {
   const configPath = path.join(process.cwd(), configDirectory)
   if (!fs.existsSync(configPath)) {
-    console.log('\nCreate directory ' + configDirectory)
+    console.log(`\nCreate directory ${configDirectory}`)
     fs.mkdirSync(configPath)
   }
 
   const configJSON = JSON.stringify(configDefaults)
   const configFilePath = path.join(configDirectory, configFileName)
   if (!fs.existsSync(configFilePath)) {
-    console.log('Create config file ' + configFilePath)
+    console.log(`Create config file ${configFilePath}`)
     fs.writeFileSync(configFilePath, configJSON, { encoding: 'utf-8' })
   }
 
   const defaultTemplatePath = path.join(configDirectory, 'templates')
   if (!fs.existsSync(defaultTemplatePath)) {
-    console.log('Create templates directory ' + defaultTemplatePath)
+    console.log(`Create templates directory ${defaultTemplatePath}`)
     fs.mkdirSync(defaultTemplatePath)
   }
   try {
@@ -107,12 +110,8 @@ export function initProjectInWorkingDirectory(presetPath, configDirectory, confi
   }
 }
 
-/**
- * @param {string} dirPath
- * @return {Array<string>}
- */
-export function getFilesRecursively(dirPath) {
-  const files = []
+export function getFilesRecursively(dirPath: string): string[] {
+  const files: string[] = []
   const items = fs.readdirSync(dirPath, { withFileTypes: true })
 
   for (const item of items) {
@@ -127,10 +126,27 @@ export function getFilesRecursively(dirPath) {
   return files
 }
 
-/**
- * @param {object} options
- */
-export function generateFiles(options) {
+export type NameStyle = 'pascalCase' | 'kebabCase'
+export type TransformFn = (val: string) => string
+
+function getResultingName(name: string, nameStyle: NameStyle, toUpperCamelCase: TransformFn): string {
+  return nameStyle === 'kebabCase' ? name : toUpperCamelCase(name)
+}
+
+export interface GenerateFilesOptions {
+  resolvedTemplatePath: string
+  name: string
+  componentType: string | null
+  relativeDestinationPath: string
+  destinationPath: string
+  endMessage: string
+  nameStyle?: NameStyle
+  toUpperCamelCase: TransformFn
+  toTitleCase: TransformFn
+  toFirstLetterLowerCase: TransformFn
+}
+
+export function generateFiles(options: GenerateFilesOptions): void {
   const {
     resolvedTemplatePath,
     name,
@@ -145,18 +161,9 @@ export function generateFiles(options) {
   } = options
 
   const upperCamelCaseName = toUpperCamelCase(name)
-  let resultingName
+  const resultingName = getResultingName(name, nameStyle, toUpperCamelCase)
 
-  switch(nameStyle) {
-  case 'kebabCase':
-    resultingName = name
-    break
-  default:
-    resultingName = upperCamelCaseName
-    break
-  }
-
-  const templateData = {
+  const templateData: Record<string, string> = {
     name: name,
     componentType: componentType ? toTitleCase(componentType) : 'Component',
     upperCamelCaseName,
@@ -165,8 +172,8 @@ export function generateFiles(options) {
     destinationPath: relativeDestinationPath,
   }
 
-  const fileRenameFn = (basename) => {
-    return basename.replace('ComponentTemplate', resultingName)
+  const fileRenameFn = (basename: string): string => {
+    return basename.replace(MAGIC_COMPONENT_NAME, resultingName)
   }
 
   copyTemplateFiles({
@@ -181,11 +188,19 @@ export function generateFiles(options) {
   })
 }
 
-/**
- * @param {object} options
- * @return {any}
- */
-export function generateComponentFiles(options) {
+export interface GenerateComponentFilesOptions {
+  fullTemplatePath: string
+  componentPath: string
+  name: string
+  componentType: string | null
+  flavour: string
+  availableFlavours: string[]
+  nameStyle?: NameStyle
+  validateKebabCaseName: (name: string) => string | true
+  toUpperCamelCase: TransformFn
+}
+
+export function generateComponentFiles(options: GenerateComponentFilesOptions): void {
   const {
     fullTemplatePath,
     componentPath,
@@ -211,48 +226,48 @@ export function generateComponentFiles(options) {
     throw new Error('flavour not found')
   }
 
-  const upperCamelCaseName = toUpperCamelCase(name)
-
-  let replacedNameInPath
-  switch(nameStyle) {
-  case 'kebabCase':
-    replacedNameInPath = name
-    break
-  default:
-    replacedNameInPath = upperCamelCaseName
-    break
-  }
+  const replacedNameInPath = getResultingName(name, nameStyle ?? 'pascalCase', toUpperCamelCase)
 
   const relativeDestinationPath = componentType ? path.join(componentType, replacedNameInPath) : replacedNameInPath
-  const destinationPath = path.join(componentPath, relativeDestinationPath)
+  const destinationPathResolved = path.join(componentPath, relativeDestinationPath)
   const resolvedTemplatePath = path.join(
     fullTemplatePath,
     effectiveFlavour,
-    'ComponentTemplate',
+    MAGIC_COMPONENT_NAME,
     '**',
     '*.*'
   ).split(path.sep).join('/')
 
-  const endMessage = `Component '${destinationPath}' was created.`
+  const endMessage = `Component '${destinationPathResolved}' was created.`
 
-  return generateFiles({
+  generateFiles({
     resolvedTemplatePath,
     name,
     componentType,
     relativeDestinationPath,
-    destinationPath,
+    destinationPath: destinationPathResolved,
     endMessage,
     nameStyle,
     toUpperCamelCase,
-    toTitleCase: (val) => val.charAt(0).toUpperCase() + val.slice(1),
-    toFirstLetterLowerCase: (val) => val.charAt(0).toLowerCase() + val.slice(1),
+    toTitleCase: (val: string) => val.charAt(0).toUpperCase() + val.slice(1),
+    toFirstLetterLowerCase: (val: string) => val.charAt(0).toLowerCase() + val.slice(1),
   })
 }
 
-/**
- * @param {object} options
- */
-export function generateFilesIfNotExistAlready(options) {
+export interface GenerateFilesIfNotExistAlreadyOptions {
+  fullTemplatePath: string
+  componentPath: string
+  name: string
+  componentType: string | null
+  flavour: string
+  availableFlavours: string[]
+  nameStyle?: NameStyle
+  validateDirectoryExists: (path: string) => void
+  getFiles: (path: string) => string[]
+  toUpperCamelCase: TransformFn
+}
+
+export function generateFilesIfNotExistAlready(options: GenerateFilesIfNotExistAlreadyOptions): void {
   const {
     fullTemplatePath,
     componentPath,
@@ -266,22 +281,12 @@ export function generateFilesIfNotExistAlready(options) {
     toUpperCamelCase,
   } = options
 
-  const upperCamelCaseName = toUpperCamelCase(name)
-
-  let replacedNameInPath
-  switch(nameStyle) {
-  case 'kebabCase':
-    replacedNameInPath = name
-    break
-  default:
-    replacedNameInPath = upperCamelCaseName
-    break
-  }
+  const replacedNameInPath = getResultingName(name, nameStyle ?? 'pascalCase', toUpperCamelCase)
 
   const relativeDestinationPath = componentType ? path.join(componentType, replacedNameInPath) : replacedNameInPath
-  const destinationPath = path.join(componentPath, relativeDestinationPath)
+  const destinationPathResolved = path.join(componentPath, relativeDestinationPath)
 
-  validateDirectoryExists(destinationPath)
+  validateDirectoryExists(destinationPathResolved)
 
   const effectiveFlavour = (flavour || 'default').trim()
 
@@ -289,36 +294,36 @@ export function generateFilesIfNotExistAlready(options) {
     throw new Error(`flavour '${effectiveFlavour}' does not exist, choose one of: ${availableFlavours}`)
   }
 
-  const existingFiles = getFiles(destinationPath)
-  const templateFilesDir = path.join(fullTemplatePath, effectiveFlavour, 'ComponentTemplate')
+  const existingFiles = getFiles(destinationPathResolved)
+  const templateFilesDir = path.join(fullTemplatePath, effectiveFlavour, MAGIC_COMPONENT_NAME)
   const templateFiles = getFiles(templateFilesDir)
 
-  const filesToAdd = templateFiles.filter(fileName => {
-    const tmpName = fileName.replace('ComponentTemplate', replacedNameInPath)
+  const filesToAdd = templateFiles.filter((fileName: string) => {
+    const tmpName = fileName.replace(MAGIC_COMPONENT_NAME, replacedNameInPath)
     return !existingFiles.includes(tmpName)
   })
 
-  filesToAdd.forEach((newFile) => {
+  filesToAdd.forEach((newFile: string) => {
     const resolvedTemplatePath = path.join(
       fullTemplatePath,
       effectiveFlavour,
-      'ComponentTemplate',
+      MAGIC_COMPONENT_NAME,
       '**',
       newFile,
     ).split(path.sep).join('/')
 
-    const endMessage = `New file '${newFile.replace('ComponentTemplate', replacedNameInPath)}' created`
+    const endMessage = `New file '${newFile.replace(MAGIC_COMPONENT_NAME, replacedNameInPath)}' created`
     generateFiles({
       resolvedTemplatePath,
       name,
       componentType,
       relativeDestinationPath,
-      destinationPath,
+      destinationPath: destinationPathResolved,
       endMessage,
       nameStyle,
       toUpperCamelCase,
-      toTitleCase: (val) => val.charAt(0).toUpperCase() + val.slice(1),
-      toFirstLetterLowerCase: (val) => val.charAt(0).toLowerCase() + val.slice(1),
+      toTitleCase: (val: string) => val.charAt(0).toUpperCase() + val.slice(1),
+      toFirstLetterLowerCase: (val: string) => val.charAt(0).toLowerCase() + val.slice(1),
     })
   })
 }
